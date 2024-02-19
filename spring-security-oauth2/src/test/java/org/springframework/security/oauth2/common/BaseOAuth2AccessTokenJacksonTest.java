@@ -12,7 +12,7 @@
  */
 package org.springframework.security.oauth2.common;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
@@ -28,6 +28,7 @@ import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -36,6 +37,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
  *
  * @author Rob Winch
  */
+@PowerMockIgnore("jdk.internal.reflect.*")
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ System.class })
 abstract class BaseOAuth2AccessTokenJacksonTest {

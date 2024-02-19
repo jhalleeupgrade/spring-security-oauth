@@ -19,8 +19,8 @@ package org.springframework.security.oauth2.provider.endpoint;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 import java.security.Principal;
@@ -36,7 +36,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -102,11 +102,11 @@ public class TokenEndpointTests {
 		parameters.put(OAuth2Utils.GRANT_TYPE, "authorization_code");
 
 		OAuth2AccessToken expectedToken = new DefaultOAuth2AccessToken("FOO");
-		when(tokenGranter.grant(eq("authorization_code"), Mockito.any(TokenRequest.class))).thenReturn(
+		when(tokenGranter.grant(eq("authorization_code"), any(TokenRequest.class))).thenReturn(
 				expectedToken);
 		@SuppressWarnings("unchecked")
-		Map<String, String> anyMap = Mockito.any(Map.class);
-		when(authorizationRequestFactory.createTokenRequest(anyMap, Mockito.any(ClientDetails.class))).thenReturn(
+		Map<String, String> anyMap = any(Map.class);
+		when(authorizationRequestFactory.createTokenRequest(anyMap, any(ClientDetails.class))).thenReturn(
 				createFromParameters(parameters));
 
 		clientAuthentication = new UsernamePasswordAuthenticationToken(null, null,
@@ -136,7 +136,7 @@ public class TokenEndpointTests {
 
 		when(tokenGranter.grant(eq("authorization_code"), captor.capture())).thenReturn(expectedToken);
 		@SuppressWarnings("unchecked")
-		Map<String, String> anyMap = Mockito.any(Map.class);
+		Map<String, String> anyMap = any(Map.class);
 		when(authorizationRequestFactory.createTokenRequest(anyMap, eq(clientDetails))).thenReturn(
 				createFromParameters(parameters));
 
@@ -165,11 +165,11 @@ public class TokenEndpointTests {
 		parameters.put("code", "kJAHDFG");
 
 		OAuth2AccessToken expectedToken = new DefaultOAuth2AccessToken("FOO");
-		when(tokenGranter.grant(eq("authorization_code"), Mockito.any(TokenRequest.class))).thenReturn(
+		when(tokenGranter.grant(eq("authorization_code"), any(TokenRequest.class))).thenReturn(
 				expectedToken);
 		@SuppressWarnings("unchecked")
-		Map<String, String> anyMap = Mockito.any(Map.class);
-		when(authorizationRequestFactory.createTokenRequest(anyMap, Mockito.any(ClientDetails.class))).thenReturn(
+		Map<String, String> anyMap = any(Map.class);
+		when(authorizationRequestFactory.createTokenRequest(anyMap, any(ClientDetails.class))).thenReturn(
 				createFromParameters(parameters));
 
 		ResponseEntity<OAuth2AccessToken> response = endpoint.getAccessToken(clientAuthentication, parameters);
@@ -187,7 +187,7 @@ public class TokenEndpointTests {
 		parameters.put("client_id", clientId);
 		parameters.put("scope", "read");
 		@SuppressWarnings("unchecked")
-		Map<String, String> anyMap = Mockito.any(Map.class);
+		Map<String, String> anyMap = any(Map.class);
 		when(authorizationRequestFactory.createTokenRequest(anyMap, eq(clientDetails))).thenReturn(
 				createFromParameters(parameters));
 		when(clientDetailsService.loadClientByClientId(clientId)).thenReturn(clientDetails);
