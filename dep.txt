@@ -1,0 +1,108 @@
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] OAuth for Spring Security                                          [pom]
+[INFO] spring-security-jwt                                                [jar]
+[INFO] OAuth2 for Spring Security                                         [jar]
+[INFO] 
+[INFO] --< org.springframework.security.oauth:spring-security-oauth-parent >---
+[INFO] Building OAuth for Spring Security 6.6.6-SNAPSHOT                  [1/3]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] --- dependency:3.3.0:tree (default-cli) @ spring-security-oauth-parent ---
+[INFO] org.springframework.security.oauth:spring-security-oauth-parent:pom:6.6.6-SNAPSHOT
+[INFO] \- javax.annotation:javax.annotation-api:jar:1.3.2:compile
+[INFO] 
+[INFO] ----------< org.springframework.security:spring-security-jwt >----------
+[INFO] Building spring-security-jwt 6.6.6-SNAPSHOT                        [2/3]
+[INFO]   from spring-security-jwt/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- dependency:3.3.0:tree (default-cli) @ spring-security-jwt ---
+[INFO] org.springframework.security:spring-security-jwt:jar:6.6.6-SNAPSHOT
+[INFO] +- org.bouncycastle:bcpkix-jdk15on:jar:1.70:compile
+[INFO] |  +- org.bouncycastle:bcprov-jdk15on:jar:1.70:compile
+[INFO] |  \- org.bouncycastle:bcutil-jdk15on:jar:1.70:compile
+[INFO] +- junit:junit:jar:4.13.2:test
+[INFO] |  \- org.hamcrest:hamcrest-core:jar:2.2:test
+[INFO] |     \- org.hamcrest:hamcrest:jar:2.2:test
+[INFO] +- org.mockito:mockito-all:jar:1.9.5:test
+[INFO] \- javax.annotation:javax.annotation-api:jar:1.3.2:compile
+[INFO] 
+[INFO] -----< org.springframework.security.oauth:spring-security-oauth2 >------
+[INFO] Building OAuth2 for Spring Security 6.6.6-SNAPSHOT                 [3/3]
+[INFO]   from spring-security-oauth2/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- dependency:3.3.0:tree (default-cli) @ spring-security-oauth2 ---
+[INFO] org.springframework.security.oauth:spring-security-oauth2:jar:6.6.6-SNAPSHOT
+[INFO] +- javax.annotation:javax.annotation-api:jar:1.3.2:compile
+[INFO] +- javax.servlet:javax.servlet-api:jar:4.0.1:compile
+[INFO] +- org.springframework:spring-beans:jar:4.3.30.RELEASE:compile
+[INFO] +- org.springframework:spring-core:jar:4.3.30.RELEASE:compile
+[INFO] |  \- commons-logging:commons-logging:jar:1.2:compile
+[INFO] +- org.springframework:spring-context:jar:4.3.30.RELEASE:compile
+[INFO] |  \- org.springframework:spring-expression:jar:4.3.30.RELEASE:compile
+[INFO] +- org.springframework:spring-aop:jar:4.3.30.RELEASE:compile
+[INFO] +- org.springframework:spring-jdbc:jar:4.3.30.RELEASE:compile
+[INFO] |  \- org.springframework:spring-tx:jar:4.3.30.RELEASE:compile
+[INFO] +- org.springframework:spring-webmvc:jar:4.3.30.RELEASE:compile
+[INFO] |  \- org.springframework:spring-web:jar:4.3.30.RELEASE:compile
+[INFO] +- org.springframework:spring-test:jar:4.3.30.RELEASE:test
+[INFO] +- org.springframework.security:spring-security-core:jar:4.2.20.RELEASE:compile
+[INFO] |  \- aopalliance:aopalliance:jar:1.0:compile
+[INFO] +- org.springframework.security:spring-security-config:jar:4.2.20.RELEASE:compile
+[INFO] +- org.springframework.security:spring-security-jwt:jar:6.6.6-SNAPSHOT:compile
+[INFO] |  \- org.bouncycastle:bcpkix-jdk15on:jar:1.70:compile
+[INFO] |     +- org.bouncycastle:bcprov-jdk15on:jar:1.70:compile
+[INFO] |     \- org.bouncycastle:bcutil-jdk15on:jar:1.70:compile
+[INFO] +- org.springframework.security:spring-security-web:jar:4.2.20.RELEASE:compile
+[INFO] +- commons-codec:commons-codec:jar:1.14:compile
+[INFO] +- org.springframework.data:spring-data-redis:jar:1.5.2.RELEASE:compile
+[INFO] |  \- org.springframework:spring-context-support:jar:5.3.31:compile
+[INFO] +- redis.clients:jedis:jar:3.8.0:compile
+[INFO] |  \- org.apache.commons:commons-pool2:jar:2.11.1:compile
+[INFO] +- com.fasterxml.jackson.core:jackson-annotations:jar:2.13.5:compile
+[INFO] +- com.fasterxml.jackson.core:jackson-databind:jar:2.13.5:compile
+[INFO] |  \- com.fasterxml.jackson.core:jackson-core:jar:2.13.5:compile
+[INFO] +- org.apache.httpcomponents:httpclient:jar:4.5.14:compile
+[INFO] |  \- org.apache.httpcomponents:httpcore:jar:4.4.16:compile
+[INFO] +- com.squareup.okhttp3:mockwebserver:jar:4.9.3:test
+[INFO] |  +- com.squareup.okhttp3:okhttp:jar:4.9.3:test
+[INFO] |  |  +- com.squareup.okio:okio:jar:3.4.0:test
+[INFO] |  |  |  \- com.squareup.okio:okio-jvm:jar:3.4.0:test
+[INFO] |  |  \- org.jetbrains.kotlin:kotlin-stdlib:jar:1.6.21:test
+[INFO] |  |     +- org.jetbrains.kotlin:kotlin-stdlib-common:jar:1.6.21:test
+[INFO] |  |     \- org.jetbrains:annotations:jar:17.0.0:test
+[INFO] |  \- org.jetbrains.kotlin:kotlin-stdlib-jdk8:jar:1.6.21:test
+[INFO] |     \- org.jetbrains.kotlin:kotlin-stdlib-jdk7:jar:1.6.21:test
+[INFO] +- junit:junit:jar:4.13.2:compile
+[INFO] |  \- org.hamcrest:hamcrest-core:jar:2.2:compile
+[INFO] |     \- org.hamcrest:hamcrest:jar:2.2:compile
+[INFO] +- org.powermock:powermock-module-junit4:jar:2.0.9:test
+[INFO] |  \- org.powermock:powermock-module-junit4-common:jar:2.0.9:test
+[INFO] |     +- org.powermock:powermock-reflect:jar:2.0.9:test
+[INFO] |     \- org.powermock:powermock-core:jar:2.0.9:test
+[INFO] |        \- org.javassist:javassist:jar:3.29.2-GA:test
+[INFO] +- org.powermock:powermock-api-mockito2:jar:2.0.9:test
+[INFO] |  \- org.powermock:powermock-api-support:jar:2.0.9:test
+[INFO] +- org.mockito:mockito-core:jar:4.5.1:test
+[INFO] |  +- net.bytebuddy:byte-buddy:jar:1.12.23:test
+[INFO] |  +- net.bytebuddy:byte-buddy-agent:jar:1.12.23:test
+[INFO] |  \- org.objenesis:objenesis:jar:3.3:test
+[INFO] +- org.slf4j:slf4j-api:jar:1.7.36:test
+[INFO] \- org.hsqldb:hsqldb-j5:jar:2.0.0:test
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for OAuth for Spring Security 6.6.6-SNAPSHOT:
+[INFO] 
+[INFO] OAuth for Spring Security .......................... SUCCESS [  0.325 s]
+[INFO] spring-security-jwt ................................ SUCCESS [  0.040 s]
+[INFO] OAuth2 for Spring Security ......................... SUCCESS [  0.057 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  0.671 s
+[INFO] Finished at: 2024-02-19T12:05:00-05:00
+[INFO] ------------------------------------------------------------------------

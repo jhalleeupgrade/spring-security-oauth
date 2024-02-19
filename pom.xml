@@ -28,7 +28,7 @@
         <spring.data.redis.version>1.5.2.RELEASE</spring.data.redis.version>
         <redis.clients.version>2.6.3</redis.clients.version>
         <jackson2.version>2.10.5.1</jackson2.version>
-        <powermock.version>1.7.4</powermock.version>
+        <powermock.version>2.0.9</powermock.version>
         <java.version>17</java.version>
     </properties>
     <dependencyManagement>
@@ -145,11 +145,6 @@
                 <groupId>org.jruby.jcodings</groupId>
                 <artifactId>jcodings</artifactId>
                 <version>1.0.8</version>
-            </dependency>
-            <dependency>
-                <groupId>org.mockito</groupId>
-                <artifactId>mockito-all</artifactId>
-                <version>1.9.5</version>
             </dependency>
             <dependency>
                 <groupId>org.hsqldb</groupId>

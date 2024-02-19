@@ -5,16 +5,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.security.oauth2.common.util.OAuth2Utils;
-import org.springframework.security.oauth2.provider.endpoint.AuthorizationEndpoint;
 import org.springframework.security.oauth2.provider.endpoint.TokenEndpoint;
 
 /**
  * Represents an OAuth2 token request, made at the {@link TokenEndpoint}. The requestParameters map should contain the
  * original, unmodified parameters from the original OAuth2 request.
- * 
- * In the implicit flow, a token is requested through the {@link AuthorizationEndpoint} directly, and in that case the
- * {@link AuthorizationRequest} is converted into a {@link TokenRequest} for processing through the token granting
- * chain.
  *
  * <p>
  * @deprecated See the <a href="https://github.com/spring-projects/spring-security/wiki/OAuth-2.0-Migration-Guide">OAuth 2.0 Migration Guide</a> for Spring Security 5.

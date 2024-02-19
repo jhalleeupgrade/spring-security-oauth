@@ -21,7 +21,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.springframework.security.oauth2.config.annotation.AuthorizationServerConfigurationTests;
-import org.springframework.security.oauth2.config.annotation.ResourceServerConfigurationTests;
 
 /**
  * A test suite for probing weird ordering problems in the tests.
@@ -29,7 +28,7 @@ import org.springframework.security.oauth2.config.annotation.ResourceServerConfi
  * @author Dave Syer
  */
 @RunWith(Suite.class)
-@SuiteClasses({ AuthorizationServerConfigurationTests.class,  ResourceServerConfigurationTests.class })
+@SuiteClasses({ AuthorizationServerConfigurationTests.class })
 @Ignore
 public class AdhocTestSuite {
 
