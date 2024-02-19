@@ -13,8 +13,8 @@
 
 package org.springframework.security.oauth2.provider.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -24,8 +24,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.common.util.OAuth2Utils;
 import org.springframework.security.oauth2.provider.OAuth2Request;
@@ -39,7 +40,7 @@ public class OAuth2RequestTests {
 
 	private Map<String, String> parameters;
 
-	@Before
+	@BeforeEach
 	public void prepare() {
 		parameters = new HashMap<String, String>();
 		parameters.put("client_id", "theClient");
@@ -74,7 +75,7 @@ public class OAuth2RequestTests {
 				Collections.<String, String>emptyMap(), "clientId", Collections.<GrantedAuthority>emptyList(),
 				false, Collections.<String>emptySet(), resourceIds, "redirectUri", Collections.<String>emptySet(),
 				Collections.<String, Serializable>emptyMap());
-		assertNotSame("resourceIds are the same", resourceIds, request.getResourceIds());
+		assertNotSame(resourceIds, request.getResourceIds(), "resourceIds are the same");
 	}
 
 	private OAuth2Request createFromParameters(Map<String, String> parameters) {

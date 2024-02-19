@@ -12,10 +12,12 @@
  */
 package org.springframework.security.oauth2.client.token.grant.implicit;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.Rule;
-import org.junit.Test;
+
+
+import org.junit.jupiter.api.Test;
 import org.junit.rules.ExpectedException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResourceDetails;
@@ -32,7 +34,7 @@ import org.springframework.util.MultiValueMap;
  */
 public class ImplicitAccessTokenProviderTests {
 
-	@Rule
+	
 	public ExpectedException expected = ExpectedException.none();
 
 	private MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
@@ -48,10 +50,12 @@ public class ImplicitAccessTokenProviderTests {
 
 	private ImplicitResourceDetails resource = new ImplicitResourceDetails();
 
-	@Test(expected = IllegalStateException.class)
+	@Test
 	public void testRedirectNotSpecified() throws Exception {
-		AccessTokenRequest request = new DefaultAccessTokenRequest();
-		provider.obtainAccessToken(resource, request);
+		assertThrows(IllegalStateException.class, () -> {
+			AccessTokenRequest request = new DefaultAccessTokenRequest();
+			provider.obtainAccessToken(resource, request);
+		});
 	}
 
 	@Test

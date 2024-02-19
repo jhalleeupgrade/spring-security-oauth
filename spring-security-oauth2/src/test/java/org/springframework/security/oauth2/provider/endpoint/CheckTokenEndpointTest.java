@@ -15,8 +15,9 @@
  */
 package org.springframework.security.oauth2.provider.endpoint;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.AccessTokenConverter;
@@ -25,8 +26,8 @@ import org.springframework.security.oauth2.provider.token.ResourceServerTokenSer
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -37,7 +38,7 @@ import static org.mockito.Mockito.when;
 public class CheckTokenEndpointTest {
 	private CheckTokenEndpoint checkTokenEndpoint;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		ResourceServerTokenServices resourceServerTokenServices = mock(ResourceServerTokenServices.class);
 		OAuth2AccessToken accessToken = mock(OAuth2AccessToken.class);
@@ -58,7 +59,7 @@ public class CheckTokenEndpointTest {
 	public void checkTokenWhenTokenValidThenReturnActiveAttribute() throws Exception {
 		Map<String, ?> response = this.checkTokenEndpoint.checkToken("access-token-1234");
 		Object active = response.get("active");
-		assertNotNull("active is null", active);
-		assertEquals("active not true", Boolean.TRUE, active);
+		assertNotNull(active, "active is null");
+		assertEquals(Boolean.TRUE, active, "active not true");
 	}
 }

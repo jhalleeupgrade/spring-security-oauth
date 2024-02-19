@@ -12,10 +12,11 @@
  */
 package org.springframework.security.oauth2.client.token.grant.password;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Rule;
-import org.junit.Test;
+
+
+import org.junit.jupiter.api.Test;
 import org.junit.rules.ExpectedException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResourceDetails;
@@ -32,7 +33,7 @@ import org.springframework.util.MultiValueMap;
  */
 public class ResourceOwnerPasswordAccessTokenProviderTests {
 
-	@Rule
+	
 	public ExpectedException expected = ExpectedException.none();
 
 	private MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();

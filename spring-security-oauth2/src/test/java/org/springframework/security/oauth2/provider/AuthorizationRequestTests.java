@@ -16,9 +16,7 @@
 
 package org.springframework.security.oauth2.provider;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -27,8 +25,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.springframework.security.oauth2.common.util.OAuth2Utils;
 import org.springframework.security.oauth2.common.util.SerializationUtils;
 import org.springframework.util.StringUtils;
@@ -42,7 +41,7 @@ public class AuthorizationRequestTests {
 
 	private Map<String, String> parameters;
 
-	@Before
+	@BeforeEach
 	public void prepare() {
 		parameters = new HashMap<String, String>();
 		parameters.put("client_id", "theClient");
@@ -81,7 +80,7 @@ public class AuthorizationRequestTests {
 		AuthorizationRequest authorizationRequest = createFromParameters(parameters);
 		String multiScope = "foo bar";
 		authorizationRequest.setScope(Collections.singleton(multiScope));
-		assertEquals(authorizationRequest.getScope().size(), 2);
+		assertEquals(2, authorizationRequest.getScope().size());
 		assertTrue(authorizationRequest.getScope().containsAll(Arrays.asList("foo", "bar")));
 		assertFalse(authorizationRequest.getScope().contains(multiScope));
 	}
@@ -95,7 +94,7 @@ public class AuthorizationRequestTests {
 		AuthorizationRequest authorizationRequest = createFromParameters(parameters);
 		String multiScope = "foo,bar";
 		authorizationRequest.setScope(Collections.singleton(multiScope));
-		assertEquals(authorizationRequest.getScope().size(), 1);
+		assertEquals(1, authorizationRequest.getScope().size());
 		assertTrue(authorizationRequest.getScope().contains(multiScope));
 	}
 

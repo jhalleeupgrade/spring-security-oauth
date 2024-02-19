@@ -1,12 +1,13 @@
 package org.springframework.security.oauth2.client.filter;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -126,7 +127,7 @@ public class OAuth2ClientContextFilterTests {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.setQueryString("foo=bar&code=XXXX&parm=%xx");
 		try {
-			assertEquals(null, filter.calculateCurrentUri(request));
+			assertNull(filter.calculateCurrentUri(request));
 		} catch (IllegalStateException ex) {
 			// OAuth2ClientContextFilter.calculateCurrentUri() internally uses
 			// ServletUriComponentsBuilder.fromRequest(), which behaves differently in Spring Framework 5

@@ -12,12 +12,14 @@
  */
 package org.springframework.security.oauth2.provider.approval;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
 
-import org.junit.Test;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
+
+import org.junit.jupiter.api.Test;
 import org.springframework.security.oauth2.common.util.OAuth2Utils;
 import org.springframework.security.oauth2.provider.AuthorizationRequest;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
@@ -45,10 +47,12 @@ public class TokenStoreUserApprovalHandlerTests {
 		handler.setRequestFactory(requestFactory);
 	}
 
-	@Test(expected = IllegalStateException.class)
+	@Test
 	public void testMandatoryProperties() throws Exception {
-		handler = new TokenStoreUserApprovalHandler();
-		handler.afterPropertiesSet();
+		assertThrows(IllegalStateException.class, () -> {
+			handler = new TokenStoreUserApprovalHandler();
+			handler.afterPropertiesSet();
+		});
 	}
 
 	@Test

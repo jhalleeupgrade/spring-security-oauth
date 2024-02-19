@@ -13,10 +13,12 @@
 
 package org.springframework.security.oauth2.provider.authentication;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
+
 import org.springframework.mock.web.MockHttpServletRequest;
+
+import org.junit.jupiter.api.Test;
 import org.springframework.util.SerializationUtils;
 
 /**

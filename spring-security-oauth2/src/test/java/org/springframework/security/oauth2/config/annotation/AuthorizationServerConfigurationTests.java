@@ -12,14 +12,13 @@
  */
 package org.springframework.security.oauth2.config.annotation;
 
-import org.junit.After;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.BeanCreationException;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.beans.factory.UnsatisfiedDependencyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -78,25 +77,21 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Dave Syer
  */
-@RunWith(Parameterized.class)
 public class AuthorizationServerConfigurationTests {
 
     private AnnotationConfigWebApplicationContext context;
 
-    @Rule
-    public ExpectedException expected = ExpectedException.none();
-
     private Class<?>[] resources;
 
-    @Parameters
     public static List<Object[]> parameters() {
         return Arrays.asList( // @formatter:off
 				new Object[] { BeanCreationException.class, new Class<?>[] { AuthorizationServerUnconfigured.class } },
@@ -125,29 +120,36 @@ public class AuthorizationServerConfigurationTests {
         );
     }
 
-    public AuthorizationServerConfigurationTests(Class<? extends Exception> error, Class<?>... resource) {
-        if (error != null) {
-            expected.expect(error);
-        }
+    public void initAuthorizationServerConfigurationTests(Class<? extends Exception> error, Class<?>... resource) {
         this.resources = resource;
         context = new AnnotationConfigWebApplicationContext();
         context.setServletContext(new MockServletContext());
         context.register(resource);
     }
 
-    @After
+    @AfterEach
     public void close() {
         if (context != null) {
             context.close();
         }
     }
 
-    @Test
-    public void testDefaults() {
-        context.refresh();
-        for (Class<?> resource : resources) {
-            if (Runnable.class.isAssignableFrom(resource)) {
-                ((Runnable) context.getBean(resource)).run();
+    @MethodSource("parameters")
+    @ParameterizedTest
+    public void testDefaults(Class<? extends Exception> error, Class<?>... resource) {
+        initAuthorizationServerConfigurationTests(error, resource);
+        if (error != null) {
+            assertThatThrownBy(() -> context.refresh()).isInstanceOf(UnsatisfiedDependencyException.class);
+        } else {
+            context.refresh();
+        }
+        for (Class<?> r : resources) {
+            if (Runnable.class.isAssignableFrom(r)) {
+                if (error != null) {
+                    assertThatThrownBy(() -> ((Runnable) context.getBean(r)).run()).isInstanceOf(NoSuchBeanDefinitionException.class);
+                } else {
+                    ((Runnable) context.getBean(r)).run();
+                }
             }
         }
     }

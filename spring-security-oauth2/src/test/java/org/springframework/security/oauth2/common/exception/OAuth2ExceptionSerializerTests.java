@@ -12,10 +12,13 @@
  */
 package org.springframework.security.oauth2.common.exception;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.After;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.security.oauth2.common.exceptions.InvalidClientException;
 import org.springframework.security.oauth2.common.exceptions.InvalidGrantException;
@@ -28,8 +31,6 @@ import org.springframework.security.oauth2.common.exceptions.UnauthorizedClientE
 import org.springframework.security.oauth2.common.exceptions.UnsupportedGrantTypeException;
 import org.springframework.security.oauth2.common.exceptions.UserDeniedAuthorizationException;
 
-import static org.junit.Assert.assertEquals;
-
 /**
  *
  * @author Rob Winch
@@ -41,12 +42,12 @@ public class OAuth2ExceptionSerializerTests {
 	private static ObjectMapper mapper;
 	private OAuth2Exception oauthException;
 
-	@BeforeClass
+	@BeforeAll
 	public static void setUpClass() {
 		mapper = new ObjectMapper();
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() {
 		oauthException = null;
 	}

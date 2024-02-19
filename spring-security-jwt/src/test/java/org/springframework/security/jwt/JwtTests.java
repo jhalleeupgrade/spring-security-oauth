@@ -12,8 +12,7 @@
  */
 package org.springframework.security.jwt;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.jwt.JwtSpecData.D;
 import static org.springframework.security.jwt.JwtSpecData.E;
 import static org.springframework.security.jwt.JwtSpecData.N;
@@ -21,8 +20,9 @@ import static org.springframework.security.jwt.JwtSpecData.N;
 import java.util.Collections;
 import java.util.Map;
 
-import org.junit.Test;
 import org.springframework.security.jwt.crypto.sign.InvalidSignatureException;
+
+import org.junit.jupiter.api.Test;
 import org.springframework.security.jwt.crypto.sign.MacSigner;
 import org.springframework.security.jwt.crypto.sign.RsaSigner;
 import org.springframework.security.jwt.crypto.sign.RsaVerifier;
@@ -54,36 +54,36 @@ public class JwtTests {
 	@Test
 	public void defaultTokenContainsType() throws Exception {
 		Jwt token = JwtHelper.encode(JOE_CLAIM_SEGMENT, hmac);
-		assertTrue("Wrong header: " + token, token.toString().contains("\"alg\":\"HS256\",\"typ\":\"JWT\""));
+		assertTrue(token.toString().contains("\"alg\":\"HS256\",\"typ\":\"JWT\""), "Wrong header: " + token);
 	}
 
 	@Test
 	public void inspectCustomHeaders() throws Exception {
 		Map<String, String> headers = JwtHelper.headers(
 				JwtHelper.encode(JOE_CLAIM_SEGMENT, hmac, Collections.singletonMap("foo", "bar")).getEncoded());
-		assertEquals("Wrong header: " + headers, "bar", headers.get("foo"));
-		assertEquals("Wrong header: " + headers, "HS256", headers.get("alg"));
-		assertEquals("Wrong header: " + headers, "JWT", headers.get("typ"));
+		assertEquals("bar", headers.get("foo"), "Wrong header: " + headers);
+		assertEquals("HS256", headers.get("alg"), "Wrong header: " + headers);
+		assertEquals("JWT", headers.get("typ"), "Wrong header: " + headers);
 	}
 
 	@Test
 	public void inspectHeaders() throws Exception {
 		Map<String, String> headers = JwtHelper.headers(JOE_RSA_TOKEN);
-		assertEquals("Wrong header: " + headers, "RS256", headers.get("alg"));
-		assertEquals("Wrong header: " + headers, "JWT", headers.get("typ"));
+		assertEquals("RS256", headers.get("alg"), "Wrong header: " + headers);
+		assertEquals("JWT", headers.get("typ"), "Wrong header: " + headers);
 	}
 
 	@Test
 	public void roundTripCustomHeaders() throws Exception {
 		Jwt token = JwtHelper
 				.decode(JwtHelper.encode(JOE_CLAIM_SEGMENT, hmac, Collections.singletonMap("foo", "bar")).getEncoded());
-		assertTrue("Wrong header: " + token, token.toString().contains("\"foo\":\"bar\""));
+		assertTrue(token.toString().contains("\"foo\":\"bar\""), "Wrong header: " + token);
 	}
 
 	@Test
 	public void roundTripClaims() throws Exception {
 		Jwt token = JwtHelper.decode(JwtHelper.encode(JOE_CLAIM_SEGMENT, hmac).getEncoded());
-		assertTrue("Wrong header: " + token, token.toString().contains("\"alg\":\"HS256\",\"typ\":\"JWT\""));
+		assertTrue(token.toString().contains("\"alg\":\"HS256\",\"typ\":\"JWT\""), "Wrong header: " + token);
 	}
 
 	@Test
@@ -110,14 +110,18 @@ public class JwtTests {
 		JwtHelper.decode(JOE_HMAC_TOKEN).verifySignature(hmac);
 	}
 
-	@Test(expected = InvalidSignatureException.class)
+	@Test
 	public void invalidHmacSignatureRaisesException() {
-		JwtHelper.decode(JOE_HMAC_TOKEN).verifySignature(new MacSigner("differentkey".getBytes()));
+		assertThrows(InvalidSignatureException.class, () -> {
+			JwtHelper.decode(JOE_HMAC_TOKEN).verifySignature(new MacSigner("differentkey".getBytes()));
+		});
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void tokenMissingSignatureIsRejected() {
-		JwtHelper.decode(JOE_HMAC_TOKEN.substring(0, JOE_HMAC_TOKEN.lastIndexOf('.') + 1));
+		assertThrows(IllegalArgumentException.class, () -> {
+			JwtHelper.decode(JOE_HMAC_TOKEN.substring(0, JOE_HMAC_TOKEN.lastIndexOf('.') + 1));
+		});
 	}
 
 	@Test
@@ -134,9 +138,11 @@ public class JwtTests {
 		assertEquals(JOE_CLAIM_SEGMENT, jwt.getClaims());
 	}
 
-	@Test(expected = InvalidSignatureException.class)
+	@Test
 	public void invalidRsaSignatureRaisesException() {
-		JwtHelper.decodeAndVerify(JOE_RSA_TOKEN, new RsaVerifier(N, D));
+		assertThrows(InvalidSignatureException.class, () -> {
+			JwtHelper.decodeAndVerify(JOE_RSA_TOKEN, new RsaVerifier(N, D));
+		});
 	}
 
 	@Test

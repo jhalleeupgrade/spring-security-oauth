@@ -1,7 +1,8 @@
 package org.springframework.security.oauth2.provider.refresh;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,10 +26,11 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
 
 import java.util.Collections;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.junit.Assert.assertTrue;
 
 public class RefreshTokenGranterTests {
 
@@ -58,7 +60,7 @@ public class RefreshTokenGranterTests {
 
 	private TokenRequest validRefreshTokenRequest;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		String clientId = "client";
 		BaseClientDetails clientDetails = new BaseClientDetails();
@@ -87,38 +89,46 @@ public class RefreshTokenGranterTests {
 		assertTrue(authentication.isAuthenticated());
 	}
 
-	@Test(expected = InvalidGrantException.class)
+	@Test
 	public void testBadCredentials() {
-		RefreshTokenGranter granter = new RefreshTokenGranter(providerTokenServices, clientDetailsService, requestFactory);
-		granter.grant("refresh_token", createRefreshTokenRequest(accessToken.getRefreshToken().getValue() + "invalid_token"));
+		assertThrows(InvalidGrantException.class, () -> {
+			RefreshTokenGranter granter = new RefreshTokenGranter(providerTokenServices, clientDetailsService, requestFactory);
+			granter.grant("refresh_token", createRefreshTokenRequest(accessToken.getRefreshToken().getValue() + "invalid_token"));
+		});
 	}
 
-	@Test(expected = InvalidClientException.class)
+	@Test
 	public void testGrantTypeNotSupported() {
-		RefreshTokenGranter granter = new RefreshTokenGranter(providerTokenServices, clientDetailsService, requestFactory);
-		client.setAuthorizedGrantTypes(Collections.singleton("client_credentials"));
-		granter.grant("refresh_token", validRefreshTokenRequest);
+		assertThrows(InvalidClientException.class, () -> {
+			RefreshTokenGranter granter = new RefreshTokenGranter(providerTokenServices, clientDetailsService, requestFactory);
+			client.setAuthorizedGrantTypes(Collections.singleton("client_credentials"));
+			granter.grant("refresh_token", validRefreshTokenRequest);
+		});
 	}
 
-	@Test(expected = InvalidGrantException.class)
+	@Test
 	public void testAccountLocked() {
-		providerTokenServices.setAuthenticationManager(new AuthenticationManager() {
-			public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-				throw new LockedException("test");
-			}
+		assertThrows(InvalidGrantException.class, () -> {
+			providerTokenServices.setAuthenticationManager(new AuthenticationManager() {
+				public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+					throw new LockedException("test");
+				}
+			});
+			RefreshTokenGranter granter = new RefreshTokenGranter(providerTokenServices, clientDetailsService, requestFactory);
+			granter.grant("refresh_token", validRefreshTokenRequest);
 		});
-		RefreshTokenGranter granter = new RefreshTokenGranter(providerTokenServices, clientDetailsService, requestFactory);
-		granter.grant("refresh_token", validRefreshTokenRequest);
 	}
 
-	@Test(expected = InvalidGrantException.class)
+	@Test
 	public void testUsernameNotFound() {
-		providerTokenServices.setAuthenticationManager(new AuthenticationManager() {
-			public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-				throw new UsernameNotFoundException("test");
-			}
+		assertThrows(InvalidGrantException.class, () -> {
+			providerTokenServices.setAuthenticationManager(new AuthenticationManager() {
+				public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+					throw new UsernameNotFoundException("test");
+				}
+			});
+			RefreshTokenGranter granter = new RefreshTokenGranter(providerTokenServices, clientDetailsService, requestFactory);
+			granter.grant("refresh_token", validRefreshTokenRequest);
 		});
-		RefreshTokenGranter granter = new RefreshTokenGranter(providerTokenServices, clientDetailsService, requestFactory);
-		granter.grant("refresh_token", validRefreshTokenRequest);
 	}
 }

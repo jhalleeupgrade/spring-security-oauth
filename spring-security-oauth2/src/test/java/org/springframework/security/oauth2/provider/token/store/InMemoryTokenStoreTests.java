@@ -1,11 +1,12 @@
 package org.springframework.security.oauth2.provider.token.store;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Date;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.RequestTokenFactory;
@@ -24,7 +25,7 @@ public class InMemoryTokenStoreTests extends TokenStoreBaseTests {
 		return tokenStore;
 	}
 
-	@Before
+	@BeforeEach
 	public void createStore() {
 		tokenStore = new InMemoryTokenStore();
 	}

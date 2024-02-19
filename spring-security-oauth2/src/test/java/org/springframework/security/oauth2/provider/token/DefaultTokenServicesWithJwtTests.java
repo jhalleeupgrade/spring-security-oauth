@@ -1,13 +1,14 @@
 package org.springframework.security.oauth2.provider.token;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 
 import java.util.Collections;
 import java.util.Map;
 
-import org.junit.Test;
 import org.springframework.security.jwt.JwtHelper;
+
+import org.junit.jupiter.api.Test;
 import org.springframework.security.oauth2.common.ExpiringOAuth2RefreshToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.common.util.JsonParser;
@@ -56,11 +57,12 @@ public class DefaultTokenServicesWithJwtTests extends AbstractDefaultTokenServic
 				refreshedAccessToken.getValue()).getClaims());
 		Map<String, ?> refreshTokenInfo = parser.parseMap(JwtHelper.decode(
 				refreshedAccessToken.getRefreshToken().getValue()).getClaims());
-		assertEquals("Access token ID does not match refresh token ATI",
-				accessTokenInfo.get(AccessTokenConverter.JTI),
-				refreshTokenInfo.get(AccessTokenConverter.ATI));
-		assertNotSame("Refresh token re-used", expectedExpiringRefreshToken.getValue(),
-				refreshedAccessToken.getRefreshToken().getValue());
+		assertEquals(accessTokenInfo.get(AccessTokenConverter.JTI),
+				refreshTokenInfo.get(AccessTokenConverter.ATI),
+				"Access token ID does not match refresh token ATI");
+		assertNotSame(expectedExpiringRefreshToken.getValue(),
+				refreshedAccessToken.getRefreshToken().getValue(),
+				"Refresh token re-used");
 	}
 
 	@Test
@@ -79,9 +81,9 @@ public class DefaultTokenServicesWithJwtTests extends AbstractDefaultTokenServic
 				refreshedAccessToken.getValue()).getClaims());
 		Map<String, ?> refreshTokenInfo = parser.parseMap(JwtHelper.decode(
 				refreshedAccessToken.getRefreshToken().getValue()).getClaims());
-		assertEquals("Access token ID does not match refresh token ATI",
-				accessTokenInfo.get(AccessTokenConverter.JTI),
-				refreshTokenInfo.get(AccessTokenConverter.ATI));
+		assertEquals(accessTokenInfo.get(AccessTokenConverter.JTI),
+				refreshTokenInfo.get(AccessTokenConverter.ATI),
+				"Access token ID does not match refresh token ATI");
 	}
 
 	// gh-1109
@@ -104,9 +106,9 @@ public class DefaultTokenServicesWithJwtTests extends AbstractDefaultTokenServic
 		Map<String, ?> refreshTokenClaims = parser.parseMap(
 				JwtHelper.decode(refreshedAccessToken.getRefreshToken().getValue()).getClaims());
 
-		assertEquals("Access token ID (JTI) does not match refresh token ATI",
-				accessTokenClaims.get(AccessTokenConverter.JTI),
-				refreshTokenClaims.get(AccessTokenConverter.ATI));
+		assertEquals(accessTokenClaims.get(AccessTokenConverter.JTI),
+				refreshTokenClaims.get(AccessTokenConverter.ATI),
+				"Access token ID (JTI) does not match refresh token ATI");
 
 		Map<String, ?> previousRefreshTokenClaims = parser.parseMap(
 				JwtHelper.decode(refreshToken.getValue()).getClaims());
@@ -119,6 +121,6 @@ public class DefaultTokenServicesWithJwtTests extends AbstractDefaultTokenServic
 		// should be equal minus the ATI claim
 		previousRefreshTokenClaims.remove(AccessTokenConverter.ATI);
 		refreshTokenClaims.remove(AccessTokenConverter.ATI);
-		assertEquals("Refresh token not re-used", previousRefreshTokenClaims, refreshTokenClaims);
+		assertEquals(previousRefreshTokenClaims, refreshTokenClaims, "Refresh token not re-used");
 	}
 }

@@ -16,7 +16,7 @@
 
 package org.springframework.security.oauth2;
 
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -29,7 +29,7 @@ import org.springframework.security.oauth2.config.annotation.AuthorizationServer
  */
 @RunWith(Suite.class)
 @SuiteClasses({ AuthorizationServerConfigurationTests.class })
-@Ignore
+@Disabled
 public class AdhocTestSuite {
 
 }

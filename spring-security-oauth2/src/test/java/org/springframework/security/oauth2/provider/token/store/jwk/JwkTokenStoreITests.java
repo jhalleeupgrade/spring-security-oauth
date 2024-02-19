@@ -15,12 +15,13 @@
  */
 package org.springframework.security.oauth2.provider.token.store.jwk;
 
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
+import mockwebserver3.MockResponse;
+import mockwebserver3.MockWebServer;
 import org.apache.http.HttpHeaders;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.client.discovery.ProviderConfiguration;
 import org.springframework.security.oauth2.client.discovery.ProviderDiscoveryClient;
@@ -31,9 +32,11 @@ import org.springframework.security.oauth2.provider.token.store.IssuerClaimVerif
 import org.springframework.security.oauth2.provider.token.store.JwtClaimsSetVerifier;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.util.List;
 
 /**
  * @author Joe Grandja
@@ -41,13 +44,13 @@ import static org.junit.Assert.assertEquals;
 public class JwkTokenStoreITests {
 	private MockWebServer server;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		this.server = new MockWebServer();
 		this.server.start();
 	}
 
-	@After
+	@AfterEach
 	public void cleanUp() throws Exception {
 		this.server.shutdown();
 	}
@@ -77,27 +80,29 @@ public class JwkTokenStoreITests {
 	}
 
 	// gh-1114 Issuer claim verification
-	@Test(expected = InvalidTokenException.class)
+	@Test
 	public void readAccessTokenWhenJwtHasInvalidIssuerClaimThenVerificationFails() throws Exception {
-		String issuer = "http://localhost:8180/auth/realms/Demo-2";
+		assertThrows(InvalidTokenException.class, () -> {
+			String issuer = "http://localhost:8180/auth/realms/Demo-2";
 
-		this.setUpResponses(issuer);
+			this.setUpResponses(issuer);
 
-		ProviderDiscoveryClient discoveryClient = new ProviderDiscoveryClient(this.server.url("").toString());
-		ProviderConfiguration providerConfiguration = discoveryClient.discover();
+			ProviderDiscoveryClient discoveryClient = new ProviderDiscoveryClient(this.server.url("").toString());
+			ProviderConfiguration providerConfiguration = discoveryClient.discover();
 
-		List<JwtClaimsSetVerifier> jwtClaimsSetVerifiers = new ArrayList<JwtClaimsSetVerifier>();
-		jwtClaimsSetVerifiers.add(new IssuerClaimVerifier(providerConfiguration.getIssuer()));
+			List<JwtClaimsSetVerifier> jwtClaimsSetVerifiers = new ArrayList<JwtClaimsSetVerifier>();
+			jwtClaimsSetVerifiers.add(new IssuerClaimVerifier(providerConfiguration.getIssuer()));
 
-		JwkTokenStore jwkTokenStore = new JwkTokenStore(
-				providerConfiguration.getJwkSetUri().toString(),
-				new DelegatingJwtClaimsSetVerifier(jwtClaimsSetVerifiers));
+			JwkTokenStore jwkTokenStore = new JwkTokenStore(
+					providerConfiguration.getJwkSetUri().toString(),
+					new DelegatingJwtClaimsSetVerifier(jwtClaimsSetVerifiers));
 
-		// NOTE: The 'iss' claim in this JWT is http://localhost:8180/auth/realms/Demo
-		String jwt = "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJfQ2kzLVZmVl9OMFlBRzIyTlFPZ09VcEZCRERjRGVfckp4cHU1Sks3MDJvIn0.eyJqdGkiOiIzOWQxMmU1NC00MjliLTRkZjUtOTM2OS01YWVlOTFkNzAwZjgiLCJleHAiOjE0ODg5MDk1NzMsIm5iZiI6MCwiaWF0IjoxNDg4OTA5MjczLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgxODAvYXV0aC9yZWFsbXMvRGVtbyIsImF1ZCI6ImJvb3QtYXBwIiwic3ViIjoiNGM5NjE5NDQtN2VkZC00ZDZiLTg2MGUtYmJiZGNhODk0MDU4IiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiYm9vdC1hcHAiLCJhdXRoX3RpbWUiOjE0ODg5MDkyNzMsInNlc3Npb25fc3RhdGUiOiJiMjdjMDZlNi02ODgwLTQxZTEtOTM2MS1jZmEzYzY2ZjYyNjAiLCJhY3IiOiIxIiwiY2xpZW50X3Nlc3Npb24iOiIyYjA5NTFiOC1iMjdkLTRlYWMtYjUxOC1kZTQ5OTA5OTY2ZDgiLCJhbGxvd2VkLW9yaWdpbnMiOltdLCJyZXNvdXJjZV9hY2Nlc3MiOnsiYm9vdC1hcGkiOnsicm9sZXMiOlsiYm9vdC1hcGktcm9sZSJdfSwiYm9vdC1hcHAiOnsicm9sZXMiOlsiYm9vdC1yb2xlIl19fSwibmFtZSI6IkFsaWNlICIsInByZWZlcnJlZF91c2VybmFtZSI6ImFsaWNlIiwiZ2l2ZW5fbmFtZSI6IkFsaWNlIiwiZmFtaWx5X25hbWUiOiIiLCJlbWFpbCI6ImFsaWNlQGV4YW1wbGUubmV0In0.NfF5rPMabu8gaigUHZnX3gIzNGAxKpmPP206U5keNtexNqsmQEFO4KT2i1JYLwvNVFnRWCa8FmYokAtzeHgLvHk2B8CZXqL6GSMGQ26wPS5RIFTak9HjfHMhodqSIdy4wZTKmEcum_uYTaCdrVRSfWU8l94xAY6OzwElZX5ulkucvgWQnpFs0HB7X54kB07OqpN8L3i1jeQoEV0iJchtxZiEOSipqMNO7cujMqB_6lf9i78URPuyExfeLzAWyDbMWSJBp3zUoS7HakwE_4oC3eVEYTxDtMRL2yl2_8R0C0g2Dc0Qb9aezFxo3-SDNuy9aicDmibEEOpIoetlrIYbNA";
+			// NOTE: The 'iss' claim in this JWT is http://localhost:8180/auth/realms/Demo
+			String jwt = "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJfQ2kzLVZmVl9OMFlBRzIyTlFPZ09VcEZCRERjRGVfckp4cHU1Sks3MDJvIn0.eyJqdGkiOiIzOWQxMmU1NC00MjliLTRkZjUtOTM2OS01YWVlOTFkNzAwZjgiLCJleHAiOjE0ODg5MDk1NzMsIm5iZiI6MCwiaWF0IjoxNDg4OTA5MjczLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgxODAvYXV0aC9yZWFsbXMvRGVtbyIsImF1ZCI6ImJvb3QtYXBwIiwic3ViIjoiNGM5NjE5NDQtN2VkZC00ZDZiLTg2MGUtYmJiZGNhODk0MDU4IiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiYm9vdC1hcHAiLCJhdXRoX3RpbWUiOjE0ODg5MDkyNzMsInNlc3Npb25fc3RhdGUiOiJiMjdjMDZlNi02ODgwLTQxZTEtOTM2MS1jZmEzYzY2ZjYyNjAiLCJhY3IiOiIxIiwiY2xpZW50X3Nlc3Npb24iOiIyYjA5NTFiOC1iMjdkLTRlYWMtYjUxOC1kZTQ5OTA5OTY2ZDgiLCJhbGxvd2VkLW9yaWdpbnMiOltdLCJyZXNvdXJjZV9hY2Nlc3MiOnsiYm9vdC1hcGkiOnsicm9sZXMiOlsiYm9vdC1hcGktcm9sZSJdfSwiYm9vdC1hcHAiOnsicm9sZXMiOlsiYm9vdC1yb2xlIl19fSwibmFtZSI6IkFsaWNlICIsInByZWZlcnJlZF91c2VybmFtZSI6ImFsaWNlIiwiZ2l2ZW5fbmFtZSI6IkFsaWNlIiwiZmFtaWx5X25hbWUiOiIiLCJlbWFpbCI6ImFsaWNlQGV4YW1wbGUubmV0In0.NfF5rPMabu8gaigUHZnX3gIzNGAxKpmPP206U5keNtexNqsmQEFO4KT2i1JYLwvNVFnRWCa8FmYokAtzeHgLvHk2B8CZXqL6GSMGQ26wPS5RIFTak9HjfHMhodqSIdy4wZTKmEcum_uYTaCdrVRSfWU8l94xAY6OzwElZX5ulkucvgWQnpFs0HB7X54kB07OqpN8L3i1jeQoEV0iJchtxZiEOSipqMNO7cujMqB_6lf9i78URPuyExfeLzAWyDbMWSJBp3zUoS7HakwE_4oC3eVEYTxDtMRL2yl2_8R0C0g2Dc0Qb9aezFxo3-SDNuy9aicDmibEEOpIoetlrIYbNA";
 
-		OAuth2AccessToken accessToken = jwkTokenStore.readAccessToken(jwt);
-		assertEquals(issuer, accessToken.getAdditionalInformation().get("iss"));
+			OAuth2AccessToken accessToken = jwkTokenStore.readAccessToken(jwt);
+			assertEquals(issuer, accessToken.getAdditionalInformation().get("iss"));
+		});
 	}
 
 	private void setUpResponses(String issuer) {

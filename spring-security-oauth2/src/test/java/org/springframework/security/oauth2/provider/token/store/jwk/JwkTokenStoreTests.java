@@ -15,7 +15,7 @@
 // */
 //package org.springframework.security.oauth2.provider.token.store.jwk;
 //
-//import org.junit.Rule;
+//
 //import org.junit.Test;
 //import org.junit.rules.ExpectedException;
 //import org.junit.runner.RunWith;
@@ -57,7 +57,7 @@
 //public class JwkTokenStoreTests {
 //    private JwkTokenStore jwkTokenStore = new JwkTokenStore("https://identity.server1.io/token_keys");
 //
-//    @Rule
+//    
 //    public ExpectedException thrown = ExpectedException.none();
 //
 //    @Test

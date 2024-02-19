@@ -15,15 +15,15 @@
  */
 package org.springframework.security.oauth2.provider.token.store.jwk;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+
+import org.junit.jupiter.api.Test;
 import org.springframework.security.jwt.crypto.sign.SignatureVerifier;
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
 
 import java.util.Map;
 
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -38,32 +38,29 @@ import static org.springframework.security.oauth2.provider.token.store.jwk.JwtTe
  */
 public class JwkVerifyingJwtAccessTokenConverterTests {
 
-	@Rule
-	public ExpectedException thrown = ExpectedException.none();
-
 	@Test
 	public void encodeWhenCalledThenThrowJwkException() throws Exception {
-		this.thrown.expect(JwkException.class);
-		this.thrown.expectMessage("JWT signing (JWS) is not supported.");
 		JwkVerifyingJwtAccessTokenConverter accessTokenConverter =
 				new JwkVerifyingJwtAccessTokenConverter(mock(JwkDefinitionSource.class));
-		accessTokenConverter.encode(null, null);
+
+		assertThatThrownBy(() -> accessTokenConverter.encode(null, null))
+				.isInstanceOf(JwkException.class)
+				.withFailMessage("JWT signing (JWS) is not supported.");
 	}
 
 	@Test
 	public void decodeWhenKeyIdHeaderMissingThenThrowJwkException() throws Exception {
-		this.thrown.expect(InvalidTokenException.class);
-		this.thrown.expectMessage("Invalid JWT/JWS: kid or x5t is a required JOSE Header");
 		JwkVerifyingJwtAccessTokenConverter accessTokenConverter =
 				new JwkVerifyingJwtAccessTokenConverter(mock(JwkDefinitionSource.class));
 		String jwt = createJwt(createJwtHeader(null, null, JwkDefinition.CryptoAlgorithm.RS256));
-		accessTokenConverter.decode(jwt);
+
+		assertThatThrownBy(() -> accessTokenConverter.decode(jwt))
+				.isInstanceOf(InvalidTokenException.class)
+				.withFailMessage("Invalid JWT/JWS: kid or x5t is a required JOSE Header");
 	}
 
 	@Test
 	public void decodeWhenKeyIdHeaderInvalidThenThrowJwkException() throws Exception {
-		this.thrown.expect(InvalidTokenException.class);
-		this.thrown.expectMessage("Invalid JOSE Header kid (invalid-key-id), x5t (null)");
 		JwkDefinition jwkDefinition = this.createRSAJwkDefinition("key-id-1", null, JwkDefinition.CryptoAlgorithm.RS256);
 		JwkDefinitionSource jwkDefinitionSource = mock(JwkDefinitionSource.class);
 		JwkDefinitionSource.JwkDefinitionHolder jwkDefinitionHolder = mock(JwkDefinitionSource.JwkDefinitionHolder.class);
@@ -72,7 +69,10 @@ public class JwkVerifyingJwtAccessTokenConverterTests {
 		JwkVerifyingJwtAccessTokenConverter accessTokenConverter =
 				new JwkVerifyingJwtAccessTokenConverter(jwkDefinitionSource);
 		String jwt = createJwt(createJwtHeader("invalid-key-id", null, JwkDefinition.CryptoAlgorithm.RS256));
-		accessTokenConverter.decode(jwt);
+
+		assertThatThrownBy(() -> accessTokenConverter.decode(jwt))
+				.isInstanceOf(InvalidTokenException.class)
+				.withFailMessage("Invalid JOSE Header kid (invalid-key-id), x5t (null)");
 	}
 
 	// gh-1129
@@ -95,8 +95,6 @@ public class JwkVerifyingJwtAccessTokenConverterTests {
 
 	@Test
 	public void decodeWhenAlgorithmHeaderMissingThenThrowJwkException() throws Exception {
-		this.thrown.expect(InvalidTokenException.class);
-		this.thrown.expectMessage("Invalid JWT/JWS: alg is a required JOSE Header");
 		JwkDefinition jwkDefinition = this.createRSAJwkDefinition("key-id-1", null, JwkDefinition.CryptoAlgorithm.RS256);
 		JwkDefinitionSource jwkDefinitionSource = mock(JwkDefinitionSource.class);
 		JwkDefinitionSource.JwkDefinitionHolder jwkDefinitionHolder = mock(JwkDefinitionSource.JwkDefinitionHolder.class);
@@ -105,14 +103,14 @@ public class JwkVerifyingJwtAccessTokenConverterTests {
 		JwkVerifyingJwtAccessTokenConverter accessTokenConverter =
 				new JwkVerifyingJwtAccessTokenConverter(jwkDefinitionSource);
 		String jwt = createJwt(createJwtHeader("key-id-1", null, null));
-		accessTokenConverter.decode(jwt);
+
+		assertThatThrownBy(() -> accessTokenConverter.decode(jwt))
+				.isInstanceOf(InvalidTokenException.class)
+				.withFailMessage("Invalid JWT/JWS: alg is a required JOSE Header");
 	}
 
 	@Test
 	public void decodeWhenAlgorithmHeaderDoesNotMatchJwkAlgorithmThenThrowJwkException() throws Exception {
-		this.thrown.expect(InvalidTokenException.class);
-		this.thrown.expectMessage("Invalid JOSE Header alg (RS512) " +
-				"does not match algorithm associated to JWK with kid (key-id-1)");
 		JwkDefinition jwkDefinition = this.createRSAJwkDefinition("key-id-1", null, JwkDefinition.CryptoAlgorithm.RS256);
 		JwkDefinitionSource jwkDefinitionSource = mock(JwkDefinitionSource.class);
 		JwkDefinitionSource.JwkDefinitionHolder jwkDefinitionHolder = mock(JwkDefinitionSource.JwkDefinitionHolder.class);
@@ -121,7 +119,11 @@ public class JwkVerifyingJwtAccessTokenConverterTests {
 		JwkVerifyingJwtAccessTokenConverter accessTokenConverter =
 				new JwkVerifyingJwtAccessTokenConverter(jwkDefinitionSource);
 		String jwt = createJwt(createJwtHeader("key-id-1", null, JwkDefinition.CryptoAlgorithm.RS512));
-		accessTokenConverter.decode(jwt);
+
+		assertThatThrownBy(() -> accessTokenConverter.decode(jwt))
+				.isInstanceOf(InvalidTokenException.class)
+				.withFailMessage("Invalid JOSE Header alg (RS512) " +
+						"does not match algorithm associated to JWK with kid (key-id-1)");
 	}
 
 	@Test
@@ -144,8 +146,6 @@ public class JwkVerifyingJwtAccessTokenConverterTests {
 	// gh-1522, gh-1852
 	@Test
 	public void decodeWhenVerifySignatureFailsThenThrowInvalidTokenException() throws Exception {
-		this.thrown.expect(InvalidTokenException.class);
-		this.thrown.expectMessage("Failed to decode/verify JWT/JWS");
 		JwkDefinition jwkDefinition = this.createRSAJwkDefinition("key-id-1", null, null);
 		JwkDefinitionSource jwkDefinitionSource = mock(JwkDefinitionSource.class);
 		JwkDefinitionSource.JwkDefinitionHolder jwkDefinitionHolder = mock(JwkDefinitionSource.JwkDefinitionHolder.class);
@@ -158,7 +158,10 @@ public class JwkVerifyingJwtAccessTokenConverterTests {
 				new JwkVerifyingJwtAccessTokenConverter(jwkDefinitionSource);
 		String jwt = createJwt(createJwtHeader("key-id-1", null, JwkDefinition.CryptoAlgorithm.RS256));
 		String jws = jwt + "." + utf8Decode(b64UrlEncode("junkSignature".getBytes()));
-		accessTokenConverter.decode(jws);
+
+		assertThatThrownBy(() -> accessTokenConverter.decode(jws))
+				.isInstanceOf(InvalidTokenException.class)
+				.withFailMessage("Failed to decode/verify JWT/JWS");
 	}
 
 	private JwkDefinition createRSAJwkDefinition(String keyId, String x5t, JwkDefinition.CryptoAlgorithm algorithm) {

@@ -15,11 +15,14 @@
  */
 package org.springframework.security.oauth2.provider.token.store;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
 
 import java.net.URL;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,7 +33,7 @@ public class IssuerClaimVerifierTest {
 	private static final String DEFAULT_ISSUER = "https://uaa.run.pivotal.io";
 	private IssuerClaimVerifier issuerClaimVerifier;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		this.issuerClaimVerifier = new IssuerClaimVerifier(new URL(DEFAULT_ISSUER));
 	}
@@ -42,10 +45,12 @@ public class IssuerClaimVerifierTest {
 		this.issuerClaimVerifier.verify(claims);
 	}
 
-	@Test(expected = InvalidTokenException.class)
+	@Test
 	public void verifyWhenJwtClaimsSetContainsInvalidIssuerThenVerificationFails() throws Exception {
-		Map<String, Object> claims = new HashMap<String, Object>();
-		claims.put("iss", "https://invalid-uaa.run.pivotal.io");
-		this.issuerClaimVerifier.verify(claims);
+		assertThrows(InvalidTokenException.class, () -> {
+			Map<String, Object> claims = new HashMap<String, Object>();
+			claims.put("iss", "https://invalid-uaa.run.pivotal.io");
+			this.issuerClaimVerifier.verify(claims);
+		});
 	}
 }

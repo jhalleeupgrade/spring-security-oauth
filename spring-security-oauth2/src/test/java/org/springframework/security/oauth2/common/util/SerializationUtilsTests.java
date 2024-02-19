@@ -17,7 +17,8 @@
 package org.springframework.security.oauth2.common.util;
 
 import org.company.oauth2.CustomOAuth2AccessToken;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.common.DefaultExpiringOAuth2RefreshToken;
@@ -34,7 +35,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Artem Smotrakov
@@ -78,19 +79,21 @@ public class SerializationUtilsTests {
         assertEquals(accessToken, clone);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void deserializeNotAllowedCustomClasses() {
-        OAuth2AccessToken accessToken = new CustomOAuth2AccessToken("FOO");
-        WhitelistedSerializationStrategy newStrategy = new WhitelistedSerializationStrategy();
-        SerializationStrategy oldStrategy = SerializationUtils.getSerializationStrategy();
-        try {
-            SerializationUtils.setSerializationStrategy(newStrategy);
-            byte[] bytes = SerializationUtils.serialize(accessToken);
-            OAuth2AccessToken clone = SerializationUtils.deserialize(bytes);
-            assertNotNull(clone);
-            assertEquals(accessToken, clone);
-        } finally {
-            SerializationUtils.setSerializationStrategy(oldStrategy);
-        }
-    }
+		assertThrows(IllegalArgumentException.class, () -> {
+			OAuth2AccessToken accessToken = new CustomOAuth2AccessToken("FOO");
+			WhitelistedSerializationStrategy newStrategy = new WhitelistedSerializationStrategy();
+			SerializationStrategy oldStrategy = SerializationUtils.getSerializationStrategy();
+			try {
+				SerializationUtils.setSerializationStrategy(newStrategy);
+				byte[] bytes = SerializationUtils.serialize(accessToken);
+				OAuth2AccessToken clone = SerializationUtils.deserialize(bytes);
+				assertNotNull(clone);
+				assertEquals(accessToken, clone);
+			} finally {
+				SerializationUtils.setSerializationStrategy(oldStrategy);
+			}
+		});
+	}
 }

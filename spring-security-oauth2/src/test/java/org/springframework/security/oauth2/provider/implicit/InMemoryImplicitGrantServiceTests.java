@@ -13,12 +13,14 @@
 
 package org.springframework.security.oauth2.provider.implicit;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.Collections;
 
-import org.junit.Test;
 import org.springframework.security.oauth2.provider.ClientDetails;
+
+import org.junit.jupiter.api.Test;
 import org.springframework.security.oauth2.provider.OAuth2Request;
 import org.springframework.security.oauth2.provider.TokenRequest;
 import org.springframework.security.oauth2.provider.client.BaseClientDetails;
@@ -41,7 +43,7 @@ public class InMemoryImplicitGrantServiceTests {
 	public void testBasicInOut() {
 		service.store(oauth2Request, tokenRequest);
 		assertEquals(oauth2Request, service.remove(tokenRequest));
-		assertEquals(null, service.remove(tokenRequest));
+		assertNull(service.remove(tokenRequest));
 	}
 
 	@Test
@@ -49,7 +51,7 @@ public class InMemoryImplicitGrantServiceTests {
 		service.store(oauth2Request, tokenRequest);
 		TokenRequest tokenRequest = new TokenRequest(Collections.<String, String> emptyMap(), "client", Collections.singleton("read"), "implicit");
 		assertEquals(oauth2Request, service.remove(tokenRequest));
-		assertEquals(null, service.remove(tokenRequest));
+		assertNull(service.remove(tokenRequest));
 	}
 
 }

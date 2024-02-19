@@ -12,13 +12,13 @@
  */
 package org.springframework.security.oauth2.provider.error;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.junit.Test;
 import org.springframework.http.MediaType;
+
+import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -47,7 +47,7 @@ public class OAuth2AuthenticationEntryPointTests {
 		assertEquals(HttpServletResponse.SC_UNAUTHORIZED, response.getStatus());
 		assertEquals("{\"error\":\"unauthorized\",\"error_description\":\"Bad\"}", response.getContentAsString());
 		assertTrue(response.getContentType().contains(MediaType.APPLICATION_JSON_VALUE));
-		assertEquals(null, response.getErrorMessage());
+		assertNull(response.getErrorMessage());
 	}
 
 	@Test
@@ -58,7 +58,7 @@ public class OAuth2AuthenticationEntryPointTests {
 		assertEquals(HttpServletResponse.SC_UNAUTHORIZED, response.getStatus());
 		assertEquals("{\"error\":\"invalid_client\",\"error_description\":\"Bad client\"}", response.getContentAsString());
 		assertTrue(response.getContentType().contains(MediaType.APPLICATION_JSON_VALUE));
-		assertEquals(null, response.getErrorMessage());
+		assertNull(response.getErrorMessage());
 	}
 
 	@Test
@@ -75,7 +75,7 @@ public class OAuth2AuthenticationEntryPointTests {
 		assertEquals(HttpServletResponse.SC_UNAUTHORIZED, response.getStatus());
 		assertEquals("{\"error\":\"unauthorized\",\"error_description\":\"Bad\"}", response.getContentAsString());
 		assertTrue(MediaType.APPLICATION_JSON.isCompatibleWith(MediaType.valueOf(response.getContentType())));
-		assertEquals(null, response.getErrorMessage());
+		assertNull(response.getErrorMessage());
 	}
 
 	@Test
@@ -85,7 +85,7 @@ public class OAuth2AuthenticationEntryPointTests {
 		// TODO: maybe use forward / redirect for HTML content?
 		assertEquals(HttpServletResponse.SC_NOT_ACCEPTABLE, response.getStatus());
 		assertEquals("", response.getContentAsString());
-		assertEquals(null, response.getErrorMessage());
+		assertNull(response.getErrorMessage());
 	}
 
 	@Test
@@ -93,7 +93,7 @@ public class OAuth2AuthenticationEntryPointTests {
 		request.addHeader("Accept", String.format("%s,%s", MediaType.TEXT_HTML_VALUE, MediaType.APPLICATION_JSON));
 		entryPoint.commence(request, response, new BadCredentialsException("Bad"));
 		assertEquals(HttpServletResponse.SC_UNAUTHORIZED, response.getStatus());
-		assertEquals(null, response.getErrorMessage());
+		assertNull(response.getErrorMessage());
 	}
 
 }

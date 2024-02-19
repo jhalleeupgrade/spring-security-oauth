@@ -16,6 +16,8 @@
 
 package org.springframework.security.oauth2.client.token;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -25,8 +27,8 @@ import java.net.URI;
 import java.util.Arrays;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -43,8 +45,6 @@ import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * @author Dave Syer
@@ -70,7 +70,7 @@ public class OAuth2AccessTokenSupportTests {
 
 	private OAuth2AccessTokenSupport support = new OAuth2AccessTokenSupport(){};
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		resource.setClientId("client");
 		resource.setClientSecret("secret");
@@ -83,11 +83,13 @@ public class OAuth2AccessTokenSupportTests {
 		});
 	}
 
-	@Test(expected = OAuth2AccessDeniedException.class)
+	@Test
 	public void testRetrieveTokenFailsWhenTokenEndpointNotAvailable() {
-		error = new IOException("Planned");
-		response.setStatus(HttpStatus.BAD_REQUEST);
-		support.retrieveToken(request, resource, form, requestHeaders);
+		assertThrows(OAuth2AccessDeniedException.class, () -> {
+			error = new IOException("Planned");
+			response.setStatus(HttpStatus.BAD_REQUEST);
+			support.retrieveToken(request, resource, form, requestHeaders);
+		});
 	}
 
 	@Test
@@ -126,7 +128,7 @@ public class OAuth2AccessTokenSupportTests {
 		request.set("foo", "bar");
 		response.setBody(objectMapper.writeValueAsString(accessToken));
 		OAuth2AccessToken retrieveToken = support.retrieveToken(request, resource, form, requestHeaders);
-		assertEquals(null, form.get("foo"));
+		assertNull(form.get("foo"));
 		assertEquals(accessToken, retrieveToken);
 	}
 

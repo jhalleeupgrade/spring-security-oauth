@@ -15,17 +15,18 @@
  */
 package org.springframework.security.oauth2.provider.token.store.jwk;
 
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
+import mockwebserver3.MockResponse;
+import mockwebserver3.MockWebServer;
 import org.apache.http.HttpHeaders;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.springframework.http.MediaType;
 
 import java.util.Arrays;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 /**
  * @author Rob Winch
@@ -36,7 +37,7 @@ public class JwkDefinitionSourceITests {
 
 	private JwkDefinitionSource source;
 
-	@Before
+	@BeforeEach
 	public void setup() {
 		this.server = new MockWebServer();
 	}
@@ -86,19 +87,19 @@ public class JwkDefinitionSourceITests {
 		JwkDefinition jwkDef3 = this.source.getDefinitionLoadIfNecessary(keyId3, null).getJwkDefinition();
 
 		assertEquals(jwkDef1.getKeyId(), keyId1);
-		assertEquals(jwkDef1.getAlgorithm(), JwkDefinition.CryptoAlgorithm.RS256);
-		assertEquals(jwkDef1.getPublicKeyUse(), JwkDefinition.PublicKeyUse.SIG);
-		assertEquals(jwkDef1.getKeyType(), JwkDefinition.KeyType.RSA);
+		assertEquals(JwkDefinition.CryptoAlgorithm.RS256, jwkDef1.getAlgorithm());
+		assertEquals(JwkDefinition.PublicKeyUse.SIG, jwkDef1.getPublicKeyUse());
+		assertEquals(JwkDefinition.KeyType.RSA, jwkDef1.getKeyType());
 
 		assertEquals(jwkDef2.getKeyId(), keyId2);
-		assertEquals(jwkDef2.getAlgorithm(), JwkDefinition.CryptoAlgorithm.RS256);
-		assertEquals(jwkDef2.getPublicKeyUse(), JwkDefinition.PublicKeyUse.SIG);
-		assertEquals(jwkDef2.getKeyType(), JwkDefinition.KeyType.RSA);
+		assertEquals(JwkDefinition.CryptoAlgorithm.RS256, jwkDef2.getAlgorithm());
+		assertEquals(JwkDefinition.PublicKeyUse.SIG, jwkDef2.getPublicKeyUse());
+		assertEquals(JwkDefinition.KeyType.RSA, jwkDef2.getKeyType());
 
 		assertEquals(jwkDef3.getKeyId(), keyId3);
-		assertEquals(jwkDef3.getAlgorithm(), JwkDefinition.CryptoAlgorithm.ES256);
-		assertEquals(jwkDef3.getPublicKeyUse(), JwkDefinition.PublicKeyUse.SIG);
-		assertEquals(jwkDef3.getKeyType(), JwkDefinition.KeyType.EC);
+		assertEquals(JwkDefinition.CryptoAlgorithm.ES256, jwkDef3.getAlgorithm());
+		assertEquals(JwkDefinition.PublicKeyUse.SIG, jwkDef3.getPublicKeyUse());
+		assertEquals(JwkDefinition.KeyType.EC, jwkDef3.getKeyType());
 	}
 
 	@Test

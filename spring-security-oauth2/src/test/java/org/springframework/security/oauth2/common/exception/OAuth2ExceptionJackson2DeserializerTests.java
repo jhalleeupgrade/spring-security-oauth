@@ -12,13 +12,16 @@
  */
 package org.springframework.security.oauth2.common.exception;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
 import org.springframework.security.oauth2.common.exceptions.*;
 
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  *
@@ -30,7 +33,7 @@ public class OAuth2ExceptionJackson2DeserializerTests {
 	private static final String DETAILS = "some detail";
 	private static ObjectMapper mapper;
 
-	@BeforeClass
+	@BeforeAll
 	public static void setUpClass() {
 		mapper = new ObjectMapper();
 	}
@@ -40,7 +43,7 @@ public class OAuth2ExceptionJackson2DeserializerTests {
 		String accessToken = createResponse(OAuth2Exception.INVALID_GRANT);
 		InvalidGrantException result = (InvalidGrantException) mapper.readValue(accessToken, OAuth2Exception.class);
 		assertEquals(DETAILS,result.getMessage());
-		assertEquals(null,result.getAdditionalInformation());
+		assertNull(result.getAdditionalInformation());
 	}
 
 	@Test
@@ -48,7 +51,7 @@ public class OAuth2ExceptionJackson2DeserializerTests {
 		String accessToken = createResponse(OAuth2Exception.INVALID_REQUEST);
 		InvalidRequestException result = (InvalidRequestException) mapper.readValue(accessToken, OAuth2Exception.class);
 		assertEquals(DETAILS,result.getMessage());
-		assertEquals(null,result.getAdditionalInformation());
+		assertNull(result.getAdditionalInformation());
 	}
 
 	@Test
@@ -56,7 +59,7 @@ public class OAuth2ExceptionJackson2DeserializerTests {
 		String accessToken = createResponse(OAuth2Exception.INVALID_SCOPE);
 		InvalidScopeException result = (InvalidScopeException) mapper.readValue(accessToken, OAuth2Exception.class);
 		assertEquals(DETAILS,result.getMessage());
-		assertEquals(null,result.getAdditionalInformation());
+		assertNull(result.getAdditionalInformation());
 	}
 
 	@Test
@@ -73,7 +76,7 @@ public class OAuth2ExceptionJackson2DeserializerTests {
 		UnsupportedGrantTypeException result = (UnsupportedGrantTypeException) mapper.readValue(accessToken,
 				OAuth2Exception.class);
 		assertEquals(DETAILS,result.getMessage());
-		assertEquals(null,result.getAdditionalInformation());
+		assertNull(result.getAdditionalInformation());
 	}
 
 	@Test
@@ -82,7 +85,7 @@ public class OAuth2ExceptionJackson2DeserializerTests {
 		UnauthorizedClientException result = (UnauthorizedClientException) mapper.readValue(accessToken,
 				OAuth2Exception.class);
 		assertEquals(DETAILS,result.getMessage());
-		assertEquals(null,result.getAdditionalInformation());
+		assertNull(result.getAdditionalInformation());
 	}
 
 	@Test
@@ -91,7 +94,7 @@ public class OAuth2ExceptionJackson2DeserializerTests {
 		UserDeniedAuthorizationException result = (UserDeniedAuthorizationException) mapper.readValue(accessToken,
 				OAuth2Exception.class);
 		assertEquals(DETAILS,result.getMessage());
-		assertEquals(null,result.getAdditionalInformation());
+		assertNull(result.getAdditionalInformation());
 	}
 
 	@Test
@@ -100,7 +103,7 @@ public class OAuth2ExceptionJackson2DeserializerTests {
 		RedirectMismatchException result = (RedirectMismatchException) mapper.readValue(accessToken,
 				OAuth2Exception.class);
 		assertEquals("Redirect URI mismatch.",result.getMessage());
-		assertEquals(null,result.getAdditionalInformation());
+		assertNull(result.getAdditionalInformation());
 	}
 
 	@Test
@@ -108,7 +111,7 @@ public class OAuth2ExceptionJackson2DeserializerTests {
 		String accessToken = createResponse(OAuth2Exception.INVALID_TOKEN);
 		InvalidTokenException result = (InvalidTokenException) mapper.readValue(accessToken, OAuth2Exception.class);
 		assertEquals(DETAILS,result.getMessage());
-		assertEquals(null,result.getAdditionalInformation());
+		assertNull(result.getAdditionalInformation());
 	}
 
 	@Test
@@ -116,7 +119,7 @@ public class OAuth2ExceptionJackson2DeserializerTests {
 		String accessToken = createResponse("notdefinedcode");
 		OAuth2Exception result = mapper.readValue(accessToken, OAuth2Exception.class);
 		assertEquals(DETAILS,result.getMessage());
-		assertEquals(null,result.getAdditionalInformation());
+		assertNull(result.getAdditionalInformation());
 	}
 
 	@Test
@@ -124,7 +127,7 @@ public class OAuth2ExceptionJackson2DeserializerTests {
 		String accessToken = createResponse(OAuth2Exception.INVALID_CLIENT);
 		InvalidClientException result = (InvalidClientException) mapper.readValue(accessToken, OAuth2Exception.class);
 		assertEquals(DETAILS,result.getMessage());
-		assertEquals(null,result.getAdditionalInformation());
+		assertNull(result.getAdditionalInformation());
 	}
 
 	@Test

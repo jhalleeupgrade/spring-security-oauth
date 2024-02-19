@@ -1,6 +1,6 @@
 package org.springframework.security.oauth2.provider.approval;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -10,8 +10,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -31,7 +32,7 @@ public class ApprovalStoreUserApprovalHandlerTests {
 
 	private Authentication userAuthentication;
 
-	@Before
+	@BeforeEach
 	public void init() {
 		handler.setApprovalStore(store);
 		InMemoryClientDetailsService clientDetailsService = new InMemoryClientDetailsService();

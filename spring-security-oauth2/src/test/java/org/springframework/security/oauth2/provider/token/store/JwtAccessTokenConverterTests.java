@@ -9,8 +9,9 @@
  */
 package org.springframework.security.oauth2.provider.token.store;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -34,10 +35,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -52,7 +50,7 @@ public class JwtAccessTokenConverterTests {
 
     private Authentication userAuthentication;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         tokenEnhancer = new JwtAccessTokenConverter();
         userAuthentication = new TestAuthentication("test2", true);
@@ -68,10 +66,10 @@ public class JwtAccessTokenConverterTests {
         assertEquals("FOO", token.getAdditionalInformation()
                 .get(AccessTokenConverter.JTI));
         String claims = JwtHelper.decode(token.getValue()).getClaims();
-        assertTrue("Wrong claims: " + claims,
-                claims.contains("\"" + AccessTokenConverter.JTI + "\":\"FOO\""));
-        assertTrue("Wrong claims: " + claims,
-                claims.contains("\"" + UserAuthenticationConverter.USERNAME + "\""));
+        assertTrue(claims.contains("\"" + AccessTokenConverter.JTI + "\":\"FOO\""),
+                "Wrong claims: " + claims);
+        assertTrue(claims.contains("\"" + UserAuthenticationConverter.USERNAME + "\""),
+                "Wrong claims: " + claims);
     }
 
     @Test
@@ -153,7 +151,7 @@ public class JwtAccessTokenConverterTests {
                 token.getRefreshToken().getValue()).getClaims());
         assertEquals(Arrays.asList("read"), claims.get(AccessTokenConverter.SCOPE));
         assertEquals("FOO", claims.get(AccessTokenConverter.ATI));
-        assertEquals("Wrong claims: " + claims, "BAR", claims.get(AccessTokenConverter.JTI));
+        assertEquals("BAR", claims.get(AccessTokenConverter.JTI), "Wrong claims: " + claims);
     }
 
     @Test
@@ -186,7 +184,7 @@ public class JwtAccessTokenConverterTests {
                 + "7kgz+HkCAwEAAQ==\n" + "-----END RSA PUBLIC KEY-----");
         tokenEnhancer.afterPropertiesSet();
         Map<String, String> key = tokenEnhancer.getKey();
-        assertTrue("Wrong key: " + key, key.get("value").contains("-----BEGIN"));
+        assertTrue(key.get("value").contains("-----BEGIN"), "Wrong key: " + key);
     }
 
     @Test
@@ -197,7 +195,7 @@ public class JwtAccessTokenConverterTests {
                 + "kmd6wbrRAMPMpoC1eogWNNoXY7Jd4eWdDVmscfHczGX13uBKXwdOCEqKqoWQsXIb\n"
                 + "7kgz+HkCAwEAAQ==\n" + "-----END RSA PUBLIC KEY-----");
         Map<String, String> key = tokenEnhancer.getKey();
-        assertTrue("Wrong key: " + key, key.get("value").contains("-----BEGIN"));
+        assertTrue(key.get("value").contains("-----BEGIN"), "Wrong key: " + key);
     }
 
     @Test
@@ -206,12 +204,14 @@ public class JwtAccessTokenConverterTests {
         assertEquals("{alg=HMACSHA256, value=someKey}", tokenEnhancer.getKey().toString());
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void keysNotMatchingWithMacSigner() throws Exception {
-        tokenEnhancer.setSigningKey("aKey");
-        tokenEnhancer.setVerifierKey("someKey");
-        tokenEnhancer.afterPropertiesSet();
-    }
+		assertThrows(IllegalStateException.class, () -> {
+			tokenEnhancer.setSigningKey("aKey");
+			tokenEnhancer.setVerifierKey("someKey");
+			tokenEnhancer.afterPropertiesSet();
+		});
+	}
 
     @Test
     public void rsaKeyPair() throws Exception {
@@ -233,14 +233,16 @@ public class JwtAccessTokenConverterTests {
         tokenEnhancer
                 .decode("eyJhbGciOiJSUzI1NiJ9.eyJ1c2VyX25hbWUiOiJ0ZXN0MiIsImp0aSI6IkZPTyIsImNsaWVudF9pZCI6ImZvbyJ9.b43ob1ALSIwr_J2oEnfMhsXvYkr1qVBNhigNH2zlaE1OQLhLfT-DMlFtHcyUlyap0C2n0q61SPaGE_z715TV0uTAv2YKDN4fKZz2bMR7eHLsvaaCuvs7KCOi_aSROaUG");
         Map<String, String> key = tokenEnhancer.getKey();
-        assertTrue("Wrong key: " + key, key.get("value").contains("-----BEGIN"));
+        assertTrue(key.get("value").contains("-----BEGIN"), "Wrong key: " + key);
     }
 
     // gh-1111
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void setJwtClaimsSetVerifierWhenNullValueThenThrowIllegalArgumentException() throws Exception {
-        this.tokenEnhancer.setJwtClaimsSetVerifier(null);
-    }
+		assertThrows(IllegalArgumentException.class, () -> {
+			this.tokenEnhancer.setJwtClaimsSetVerifier(null);
+		});
+	}
 
     // gh-1111
     @Test
