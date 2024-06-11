@@ -12,8 +12,7 @@
  */
 package org.springframework.security.oauth2.config.annotation;
 
-import javax.annotation.Resource;
-
+import jakarta.annotation.Resource;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Test;
 

@@ -31,7 +31,7 @@ import org.springframework.security.oauth2.provider.RequestTokenFactory;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
 
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;

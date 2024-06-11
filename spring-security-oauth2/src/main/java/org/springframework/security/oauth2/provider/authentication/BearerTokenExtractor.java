@@ -15,7 +15,7 @@ package org.springframework.security.oauth2.provider.authentication;
 
 import java.util.Enumeration;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

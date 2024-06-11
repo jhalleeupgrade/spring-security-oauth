@@ -78,12 +78,12 @@ public class OAuth2ErrorHandler implements ResponseErrorHandler {
 	}
 
 	public boolean hasError(ClientHttpResponse response) throws IOException {
-		return HttpStatus.Series.CLIENT_ERROR.equals(response.getStatusCode().series())
+		return HttpStatus.Series.CLIENT_ERROR.equals(response.getStatusCode().value())
 				|| this.errorHandler.hasError(response);
 	}
 
 	public void handleError(final ClientHttpResponse response) throws IOException {
-		if (!HttpStatus.Series.CLIENT_ERROR.equals(response.getStatusCode().series())) {
+		if (!response.getStatusCode().is4xxClientError()) {
 			// We should only care about 400 level errors. Ex: A 500 server error shouldn't
 			// be an oauth related error.
 			errorHandler.handleError(response);
@@ -94,7 +94,7 @@ public class OAuth2ErrorHandler implements ResponseErrorHandler {
 				private byte[] lazyBody;
 
 				public HttpStatus getStatusCode() throws IOException {
-					return response.getStatusCode();
+					return HttpStatus.valueOf(response.getStatusCode().value());
 				}
 
 				public synchronized InputStream getBody() throws IOException {

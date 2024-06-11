@@ -15,9 +15,9 @@ package org.springframework.security.oauth2.config.annotation.web.configuration;
 
 import java.util.Map;
 
-import javax.annotation.Resource;
-
 import org.springframework.beans.factory.annotation.Qualifier;
+
+import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

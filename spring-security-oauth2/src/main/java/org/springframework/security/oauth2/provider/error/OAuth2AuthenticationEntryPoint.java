@@ -14,9 +14,9 @@ package org.springframework.security.oauth2.provider.error;
 
 import java.io.IOException;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;

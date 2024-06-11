@@ -14,7 +14,7 @@ package org.springframework.security.oauth2.provider.error;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.http.MediaType;
 

@@ -13,6 +13,8 @@
 
 package org.springframework.security.oauth2.config.annotation.web.configuration;
 
+import jakarta.annotation.PostConstruct;
+
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.BeanFactoryUtils;
@@ -48,7 +50,6 @@ import org.springframework.security.oauth2.provider.token.ConsumerTokenServices;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;

@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.servlet.Filter;
+import jakarta.servlet.Filter;
 
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationEventPublisher;
@@ -179,10 +179,10 @@ public final class AuthorizationServerSecurityConfigurer extends
 				builder.authenticationProvider(provider);
 			}
 		}
-		http.securityContext().securityContextRepository(new NullSecurityContextRepository()).and().csrf().disable()
-				.httpBasic().authenticationEntryPoint(this.authenticationEntryPoint).realmName(realm);
+		http.securityContext(context -> context.securityContextRepository(new NullSecurityContextRepository())).csrf(csrf -> csrf.disable())
+				.httpBasic(basic -> basic.authenticationEntryPoint(this.authenticationEntryPoint).realmName(realm));
 		if (sslOnly) {
-			http.requiresChannel().anyRequest().requiresSecure();
+			http.requiresChannel(channel -> channel.anyRequest().requiresSecure());
 		}
 	}
 
@@ -239,7 +239,7 @@ public final class AuthorizationServerSecurityConfigurer extends
 			http.addFilterBefore(filter, BasicAuthenticationFilter.class);
 		}
 
-		http.exceptionHandling().accessDeniedHandler(accessDeniedHandler);
+		http.exceptionHandling(handling -> handling.accessDeniedHandler(accessDeniedHandler));
 	}
 
 	private ClientCredentialsTokenEndpointFilter clientCredentialsTokenEndpointFilter(HttpSecurity http) {

@@ -16,12 +16,11 @@
 package org.springframework.security.oauth2.config.annotation.web.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.Order;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.config.annotation.configuration.ClientDetailsServiceConfiguration;
@@ -29,6 +28,7 @@ import org.springframework.security.oauth2.config.annotation.configurers.ClientD
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.endpoint.FrameworkEndpointHandlerMapping;
+import org.springframework.security.web.SecurityFilterChain;
 
 import java.util.Collections;
 import java.util.List;
@@ -45,8 +45,7 @@ import java.util.List;
 @Order(0)
 @Import({ ClientDetailsServiceConfiguration.class, AuthorizationServerEndpointsConfiguration.class })
 @Deprecated
-public class AuthorizationServerSecurityConfiguration extends WebSecurityConfigurerAdapter {
-
+public class AuthorizationServerSecurityConfiguration {
 	@Autowired
 	private List<AuthorizationServerConfigurer> configurers = Collections.emptyList();
 
@@ -63,18 +62,8 @@ public class AuthorizationServerSecurityConfiguration extends WebSecurityConfigu
 		}
 	}
 
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		// Over-riding to make sure this.disableLocalConfigureAuthenticationBldr = false
-		// This will ensure that when this configurer builds the AuthenticationManager it will not attempt
-		// to find another 'Global' AuthenticationManager in the ApplicationContext (if available),
-		// and set that as the parent of this 'Local' AuthenticationManager.
-		// This AuthenticationManager should only be wired up with an AuthenticationProvider
-		// composed of the ClientDetailsService (wired in this configuration) for authenticating 'clients' only.
-	}
-
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
+	@Bean
+	protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
 		AuthorizationServerSecurityConfigurer configurer = new AuthorizationServerSecurityConfigurer();
 		FrameworkEndpointHandlerMapping handlerMapping = endpoints.oauth2EndpointHandlerMapping();
 		http.setSharedObject(FrameworkEndpointHandlerMapping.class, handlerMapping);
@@ -89,17 +78,17 @@ public class AuthorizationServerSecurityConfiguration extends WebSecurityConfigu
 		}
 		// @formatter:off
 		http
-        	.authorizeRequests()
-            	.antMatchers(tokenEndpointPath).fullyAuthenticated()
-            	.antMatchers(tokenKeyPath).access(configurer.getTokenKeyAccess())
-            	.antMatchers(checkTokenPath).access(configurer.getCheckTokenAccess())
-        .and()
-        	.requestMatchers()
-            	.antMatchers(tokenEndpointPath, tokenKeyPath, checkTokenPath)
-        .and()
-        	.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.NEVER);
+				.authorizeRequests()
+//				.requestMatchers(tokenEndpointPath).fullyAuthenticated()
+				.requestMatchers(tokenKeyPath).access(configurer.getTokenKeyAccess())
+				.requestMatchers(checkTokenPath).access(configurer.getCheckTokenAccess())
+				.requestMatchers(tokenEndpointPath, tokenKeyPath, checkTokenPath)
+				.fullyAuthenticated();
+		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.NEVER);
 		// @formatter:on
 		http.setSharedObject(ClientDetailsService.class, clientDetailsService);
+
+		return http.build();
 	}
 
 	protected void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
@@ -107,5 +96,4 @@ public class AuthorizationServerSecurityConfiguration extends WebSecurityConfigu
 			configurer.configure(oauthServer);
 		}
 	}
-
 }

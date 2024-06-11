@@ -47,7 +47,7 @@ import org.springframework.util.Assert;
 import org.springframework.web.accept.ContentNegotiationStrategy;
 import org.springframework.web.accept.HeaderContentNegotiationStrategy;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * <p>
@@ -222,12 +222,11 @@ public final class ResourceServerSecurityConfigurer extends
 
 		// @formatter:off
 		http
-			.authorizeRequests().expressionHandler(expressionHandler)
-		.and()
-			.addFilterBefore(resourcesServerFilter, AbstractPreAuthenticatedProcessingFilter.class)
-			.exceptionHandling()
-				.accessDeniedHandler(accessDeniedHandler)
-				.authenticationEntryPoint(authenticationEntryPoint);
+				.authorizeRequests(requests -> requests.expressionHandler(expressionHandler))
+				.addFilterBefore(resourcesServerFilter, AbstractPreAuthenticatedProcessingFilter.class)
+				.exceptionHandling(handling -> handling
+						.accessDeniedHandler(accessDeniedHandler)
+						.authenticationEntryPoint(authenticationEntryPoint));
 		// @formatter:on
 	}
 

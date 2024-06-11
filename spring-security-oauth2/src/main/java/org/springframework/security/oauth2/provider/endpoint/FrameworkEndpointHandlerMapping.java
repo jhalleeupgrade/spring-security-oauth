@@ -143,7 +143,7 @@ public class FrameworkEndpointHandlerMapping extends RequestMappingHandlerMappin
 			return null;
 		}
 
-		Set<String> defaultPatterns = defaultMapping.getPatternsCondition().getPatterns();
+		Set<String> defaultPatterns = defaultMapping.getPathPatternsCondition().getPatternValues();
 		String[] patterns = new String[defaultPatterns.size()];
 
 		int i = 0;

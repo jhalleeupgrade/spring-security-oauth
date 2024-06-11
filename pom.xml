@@ -12,7 +12,7 @@
     <parent>
         <groupId>com.credify</groupId>
         <artifactId>java-starter-parent</artifactId>
-        <version>5.17.3</version>
+        <version>310.2.17</version>
     </parent>
 
     <modules>
@@ -23,8 +23,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <commons-codec.version>1.14</commons-codec.version>
-        <spring.version>4.3.30.RELEASE</spring.version>
-        <spring.security.version>4.2.20.RELEASE</spring.security.version>
+        <spring.security.version>6.1.7</spring.security.version>
         <spring.data.redis.version>1.5.2.RELEASE</spring.data.redis.version>
         <redis.clients.version>2.6.3</redis.clients.version>
         <jackson2.version>2.10.5.1</jackson2.version>
@@ -33,92 +32,92 @@
     </properties>
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-beans</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-core</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-context</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-expression</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-aop</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-jdbc</artifactId>
-                <version>${spring.version}</version>
-                <optional>true</optional>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-tx</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-web</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-webmvc</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
+<!--            <dependency>-->
+<!--                <groupId>org.springframework</groupId>-->
+<!--                <artifactId>spring-beans</artifactId>-->
+<!--                <version>${spring.version}</version>-->
+<!--            </dependency>-->
+<!--            <dependency>-->
+<!--                <groupId>org.springframework</groupId>-->
+<!--                <artifactId>spring-core</artifactId>-->
+<!--                <version>${spring.version}</version>-->
+<!--            </dependency>-->
+<!--            <dependency>-->
+<!--                <groupId>org.springframework</groupId>-->
+<!--                <artifactId>spring-context</artifactId>-->
+<!--                <version>${spring.version}</version>-->
+<!--            </dependency>-->
+<!--            <dependency>-->
+<!--                <groupId>org.springframework</groupId>-->
+<!--                <artifactId>spring-expression</artifactId>-->
+<!--                <version>${spring.version}</version>-->
+<!--            </dependency>-->
+<!--            <dependency>-->
+<!--                <groupId>org.springframework</groupId>-->
+<!--                <artifactId>spring-aop</artifactId>-->
+<!--                <version>${spring.version}</version>-->
+<!--            </dependency>-->
+<!--            <dependency>-->
+<!--                <groupId>org.springframework</groupId>-->
+<!--                <artifactId>spring-jdbc</artifactId>-->
+<!--                <version>${spring.version}</version>-->
+<!--                <optional>true</optional>-->
+<!--            </dependency>-->
+<!--            <dependency>-->
+<!--                <groupId>org.springframework</groupId>-->
+<!--                <artifactId>spring-tx</artifactId>-->
+<!--                <version>${spring.version}</version>-->
+<!--            </dependency>-->
+<!--            <dependency>-->
+<!--                <groupId>org.springframework</groupId>-->
+<!--                <artifactId>spring-web</artifactId>-->
+<!--                <version>${spring.version}</version>-->
+<!--            </dependency>-->
+<!--            <dependency>-->
+<!--                <groupId>org.springframework</groupId>-->
+<!--                <artifactId>spring-webmvc</artifactId>-->
+<!--                <version>${spring.version}</version>-->
+<!--            </dependency>-->
 
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-test</artifactId>
-                <version>${spring.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-core</artifactId>
-                <version>${spring.security.version}</version>
-            </dependency>
+<!--            <dependency>-->
+<!--                <groupId>org.springframework</groupId>-->
+<!--                <artifactId>spring-test</artifactId>-->
+<!--                <version>${spring.version}</version>-->
+<!--                <scope>test</scope>-->
+<!--            </dependency>-->
+<!--            <dependency>-->
+<!--                <groupId>org.springframework.security</groupId>-->
+<!--                <artifactId>spring-security-core</artifactId>-->
+<!--                <version>${spring.security.version}</version>-->
+<!--            </dependency>-->
 
-            <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-config</artifactId>
-                <version>${spring.security.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-jwt</artifactId>
-                <version>${project.version}</version>
-                <optional>true</optional>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-web</artifactId>
-                <version>${spring.security.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-tx</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-taglibs</artifactId>
-                <version>${spring.security.version}</version>
-            </dependency>
+<!--            <dependency>-->
+<!--                <groupId>org.springframework.security</groupId>-->
+<!--                <artifactId>spring-security-config</artifactId>-->
+<!--                <version>${spring.security.version}</version>-->
+<!--            </dependency>-->
+<!--            <dependency>-->
+<!--                <groupId>org.springframework.security</groupId>-->
+<!--                <artifactId>spring-security-jwt</artifactId>-->
+<!--                <version>${project.version}</version>-->
+<!--                <optional>true</optional>-->
+<!--            </dependency>-->
+<!--            <dependency>-->
+<!--                <groupId>org.springframework.security</groupId>-->
+<!--                <artifactId>spring-security-web</artifactId>-->
+<!--                <version>${spring.security.version}</version>-->
+<!--                <exclusions>-->
+<!--                    <exclusion>-->
+<!--                        <groupId>org.springframework</groupId>-->
+<!--                        <artifactId>spring-tx</artifactId>-->
+<!--                    </exclusion>-->
+<!--                </exclusions>-->
+<!--            </dependency>-->
+<!--            <dependency>-->
+<!--                <groupId>org.springframework.security</groupId>-->
+<!--                <artifactId>spring-security-taglibs</artifactId>-->
+<!--                <version>${spring.security.version}</version>-->
+<!--            </dependency>-->
             <dependency>
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
@@ -136,11 +135,11 @@
                 <artifactId>jnr-ffi</artifactId>
                 <version>1.0.7</version>
             </dependency>
-            <dependency>
-                <groupId>org.jruby</groupId>
-                <artifactId>jruby</artifactId>
-                <version>1.7.8</version>
-            </dependency>
+<!--            <dependency>-->
+<!--                <groupId>org.jruby</groupId>-->
+<!--                <artifactId>jruby</artifactId>-->
+<!--                <version>1.7.8</version>-->
+<!--            </dependency>-->
             <dependency>
                 <groupId>org.jruby.jcodings</groupId>
                 <artifactId>jcodings</artifactId>

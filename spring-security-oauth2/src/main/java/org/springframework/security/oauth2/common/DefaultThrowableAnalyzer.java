@@ -3,7 +3,7 @@ package org.springframework.security.oauth2.common;
 import org.springframework.security.web.util.ThrowableAnalyzer;
 import org.springframework.security.web.util.ThrowableCauseExtractor;
 
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletException;
 
 /**
  * Default implementation of <code>ThrowableAnalyzer</code> which is capable of also unwrapping

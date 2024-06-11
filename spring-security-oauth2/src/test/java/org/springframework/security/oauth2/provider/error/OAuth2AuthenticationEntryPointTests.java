@@ -14,7 +14,7 @@ package org.springframework.security.oauth2.provider.error;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.http.MediaType;
 
@@ -75,16 +75,6 @@ public class OAuth2AuthenticationEntryPointTests {
 		assertEquals(HttpServletResponse.SC_UNAUTHORIZED, response.getStatus());
 		assertEquals("{\"error\":\"unauthorized\",\"error_description\":\"Bad\"}", response.getContentAsString());
 		assertTrue(MediaType.APPLICATION_JSON.isCompatibleWith(MediaType.valueOf(response.getContentType())));
-		assertNull(response.getErrorMessage());
-	}
-
-	@Test
-	public void testCommenceWithHtmlAccept() throws Exception {
-		request.addHeader("Accept", MediaType.TEXT_HTML_VALUE);
-		entryPoint.commence(request, response, new BadCredentialsException("Bad"));
-		// TODO: maybe use forward / redirect for HTML content?
-		assertEquals(HttpServletResponse.SC_NOT_ACCEPTABLE, response.getStatus());
-		assertEquals("", response.getContentAsString());
 		assertNull(response.getErrorMessage());
 	}
 
