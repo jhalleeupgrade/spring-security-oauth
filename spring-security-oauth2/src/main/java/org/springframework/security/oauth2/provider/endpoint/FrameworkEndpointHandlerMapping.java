@@ -23,12 +23,11 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.security.oauth2.common.util.OAuth2Utils;
 import org.springframework.util.StringUtils;
-import org.springframework.web.servlet.mvc.condition.NameValueExpression;
-import org.springframework.web.servlet.mvc.condition.ParamsRequestCondition;
-import org.springframework.web.servlet.mvc.condition.PatternsRequestCondition;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import org.springframework.web.servlet.view.UrlBasedViewResolver;
+import org.springframework.web.util.pattern.PathPatternParser;
 
 /**
  * A handler mapping for framework endpoints (those annotated with &#64;FrameworkEndpoint).
@@ -152,30 +151,38 @@ public class FrameworkEndpointHandlerMapping extends RequestMappingHandlerMappin
 			paths.add(pattern);
 			i++;
 		}
-		PatternsRequestCondition patternsInfo = new PatternsRequestCondition(patterns, getUrlPathHelper(),
-				getPathMatcher(), useSuffixPatternMatch(), useTrailingSlashMatch(), getFileExtensions());
+//		PatternsRequestCondition patternsInfo = new PatternsRequestCondition(patterns, getUrlPathHelper(),
+//				getPathMatcher(), useSuffixPatternMatch(), useTrailingSlashMatch(), getFileExtensions());
+//
+//		ParamsRequestCondition paramsInfo = defaultMapping.getParamsCondition();
+//		if (!approvalParameter.equals(OAuth2Utils.USER_OAUTH_APPROVAL) && defaultPatterns.contains("/oauth/authorize")) {
+//			String[] params = new String[paramsInfo.getExpressions().size()];
+//			Set<NameValueExpression<String>> expressions = paramsInfo.getExpressions();
+//			i = 0;
+//			for (NameValueExpression<String> expression : expressions) {
+//				String param = expression.toString();
+//				if (OAuth2Utils.USER_OAUTH_APPROVAL.equals(param)) {
+//					params[i] = approvalParameter;
+//				}
+//				else {
+//					params[i] = param;
+//				}
+//				i++;
+//			}
+//			paramsInfo = new ParamsRequestCondition(params);
+//		}
 
-		ParamsRequestCondition paramsInfo = defaultMapping.getParamsCondition();
-		if (!approvalParameter.equals(OAuth2Utils.USER_OAUTH_APPROVAL) && defaultPatterns.contains("/oauth/authorize")) {
-			String[] params = new String[paramsInfo.getExpressions().size()];
-			Set<NameValueExpression<String>> expressions = paramsInfo.getExpressions();
-			i = 0;
-			for (NameValueExpression<String> expression : expressions) {
-				String param = expression.toString();
-				if (OAuth2Utils.USER_OAUTH_APPROVAL.equals(param)) {
-					params[i] = approvalParameter;
-				}
-				else {
-					params[i] = param;
-				}
-				i++;
-			}
-			paramsInfo = new ParamsRequestCondition(params);
-		}
+		RequestMappingInfo.BuilderConfiguration options = new RequestMappingInfo.BuilderConfiguration();
+		options.setPatternParser(new PathPatternParser());
 
-		RequestMappingInfo mapping = new RequestMappingInfo(patternsInfo, defaultMapping.getMethodsCondition(),
-				paramsInfo, defaultMapping.getHeadersCondition(), defaultMapping.getConsumesCondition(),
-				defaultMapping.getProducesCondition(), defaultMapping.getCustomCondition());
+		RequestMappingInfo mapping = RequestMappingInfo.paths(patterns)
+				.methods(defaultMapping.getMethodsCondition().getMethods().toArray(new RequestMethod[0]))
+				.options(options)
+				.build();
+
+//		RequestMappingInfo mapping = new RequestMappingInfo(patternsInfo, defaultMapping.getMethodsCondition(),
+//				paramsInfo, defaultMapping.getHeadersCondition(), defaultMapping.getConsumesCondition(),
+//				defaultMapping.getProducesCondition(), defaultMapping.getCustomCondition());
 		return mapping;
 
 	}
