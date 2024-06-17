@@ -1,12 +1,14 @@
 package org.springframework.security.oauth2.provider.expression;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.ParserContext;
 
@@ -15,7 +17,7 @@ import org.springframework.expression.ParserContext;
  * @author Rob Winch
  *
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class OAuth2ExpressionParserTests {
 	@Mock
 	private ExpressionParser delegate;
@@ -28,14 +30,16 @@ public class OAuth2ExpressionParserTests {
 
 	private OAuth2ExpressionParser parser;
 	
-	@Before
+	@BeforeEach
 	public void setUp() {
 		parser = new OAuth2ExpressionParser(delegate);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void constructorNull() {
-		new OAuth2ExpressionParser(null);
+		assertThrows(IllegalArgumentException.class, () -> {
+			new OAuth2ExpressionParser(null);
+		});
 	}
 	
 	@Test

@@ -14,10 +14,12 @@
 
 package org.springframework.security.oauth2.provider.endpoint;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
-import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
+
+import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.oauth2.common.exceptions.InvalidClientException;
 import org.springframework.security.oauth2.common.exceptions.InvalidGrantException;
@@ -40,8 +42,8 @@ public class WhitelabelErrorEndpointTests {
 		ModelAndView result = endpoint.handleError(request);
 		result.getView().render(result.getModel(), request , response);
 		String content = response.getContentAsString();
-		assertTrue("Wrong content: " + content, content.contains("OAuth Error"));
-		assertTrue("Wrong content: " + content, content.contains("invalid_client"));
+		assertTrue(content.contains("OAuth Error"), "Wrong content: " + content);
+		assertTrue(content.contains("invalid_client"), "Wrong content: " + content);
 	}
 
 	@Test
@@ -50,8 +52,8 @@ public class WhitelabelErrorEndpointTests {
 		ModelAndView result = endpoint.handleError(request);
 		result.getView().render(result.getModel(), request , response);
 		String content = response.getContentAsString();
-		assertTrue("Wrong content: " + content, content.contains("OAuth Error"));
-		assertTrue("Wrong content: " + content, content.contains("Unknown"));
+		assertTrue(content.contains("OAuth Error"), "Wrong content: " + content);
+		assertTrue(content.contains("Unknown"), "Wrong content: " + content);
 	}
 
 	@Test
@@ -60,6 +62,6 @@ public class WhitelabelErrorEndpointTests {
 		ModelAndView result = endpoint.handleError(request);
 		result.getView().render(result.getModel(), request, response);
 		String content = response.getContentAsString();
-		assertFalse("Wrong content : " + content, content.contains("<script>"));
+		assertFalse(content.contains("<script>"), "Wrong content : " + content);
 	}
 }

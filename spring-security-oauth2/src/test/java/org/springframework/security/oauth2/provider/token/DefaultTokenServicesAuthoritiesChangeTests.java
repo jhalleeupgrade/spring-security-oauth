@@ -13,14 +13,14 @@
 
 package org.springframework.security.oauth2.provider.token;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.rules.ExpectedException;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -40,10 +40,10 @@ public class DefaultTokenServicesAuthoritiesChangeTests {
 
 	private InMemoryTokenStore tokenStore = new InMemoryTokenStore();
 
-	@Rule
+	
 	public ExpectedException expected = ExpectedException.none();
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		services = new DefaultTokenServices();
 		services.setTokenStore(tokenStore);

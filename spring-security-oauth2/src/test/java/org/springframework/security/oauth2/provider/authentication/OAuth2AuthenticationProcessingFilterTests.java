@@ -13,14 +13,12 @@
 
 package org.springframework.security.oauth2.provider.authentication;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
-import javax.servlet.FilterChain;
+import jakarta.servlet.FilterChain;
 
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -69,7 +67,7 @@ public class OAuth2AuthenticationProcessingFilterTests {
 		});
 	}
 
-	@After
+	@AfterEach
 	public void clear() {
 		SecurityContextHolder.clearContext();
 	}

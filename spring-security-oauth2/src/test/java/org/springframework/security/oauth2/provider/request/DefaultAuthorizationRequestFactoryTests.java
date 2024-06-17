@@ -13,17 +13,18 @@
 
 package org.springframework.security.oauth2.provider.request;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -49,14 +50,14 @@ public class DefaultAuthorizationRequestFactoryTests {
 		}
 	});
 
-	@Before
+	@BeforeEach
 	public void start() {
 		client.setClientId("foo");
 		client.setScope(Collections.singleton("bar"));
 		client.setResourceIds(Arrays.asList("bar"));
 	}
 
-	@After
+	@AfterEach
 	public void close() {
 		SecurityContextHolder.clearContext();
 	}

@@ -15,8 +15,9 @@ package org.springframework.security.oauth2.provider.token;
 
 import java.util.*;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -29,9 +30,7 @@ import org.springframework.security.oauth2.provider.RequestTokenFactory;
 
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonMap;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests for {@link DefaultAccessTokenConverter}.
@@ -51,7 +50,7 @@ public class DefaultAccessTokenConverterTests {
 
 	private OAuth2Request request;
 
-	@Before
+	@BeforeEach
 	public void init() {
 		request = RequestTokenFactory.createOAuth2Request(null, "id",
 				AuthorityUtils.commaSeparatedStringToAuthorityList(ROLE_CLIENT), true, singleton("read"),

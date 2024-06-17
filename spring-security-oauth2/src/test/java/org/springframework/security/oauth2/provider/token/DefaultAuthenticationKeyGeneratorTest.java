@@ -15,25 +15,28 @@
  */
 package org.springframework.security.oauth2.provider.token;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Request;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyMap;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class DefaultAuthenticationKeyGeneratorTest {
     private static final String USERNAME = "name";
     private static final String CLIENT_ID = "client-id";
@@ -43,14 +46,11 @@ public class DefaultAuthenticationKeyGeneratorTest {
     @Spy
     private DefaultAuthenticationKeyGenerator generator;
 
-    @Before
-    public void setUp() throws Exception {
-        when(auth.getName()).thenReturn(USERNAME);
-    }
-
     @Test
     public void shouldUseTheChecksumGeneratedByTheDigest() {
         when(auth.getOAuth2Request()).thenReturn(createRequest(CLIENT_ID));
+        when(auth.getName()).thenReturn(USERNAME);
+
         when(generator.generateKey(anyMap())).thenReturn(CHECKSUM);
 
         assertEquals(CHECKSUM, generator.extractKey(auth));
@@ -72,6 +72,7 @@ public class DefaultAuthenticationKeyGeneratorTest {
     @Test
     public void shouldNotUseScopesIfNoneAreProvided() {
         when(auth.getOAuth2Request()).thenReturn(createRequest(CLIENT_ID));
+        when(auth.getName()).thenReturn(USERNAME);
 
         generator.extractKey(auth);
 
@@ -85,6 +86,7 @@ public class DefaultAuthenticationKeyGeneratorTest {
     @Test
     public void shouldSortTheScopesBeforeDigesting() {
         when(auth.getOAuth2Request()).thenReturn(createRequest(CLIENT_ID, "3", "1", "2"));
+        when(auth.getName()).thenReturn(USERNAME);
 
         generator.extractKey(auth);
 

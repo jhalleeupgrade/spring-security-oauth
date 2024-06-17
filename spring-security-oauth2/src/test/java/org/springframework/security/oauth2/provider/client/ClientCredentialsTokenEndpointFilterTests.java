@@ -13,9 +13,10 @@
 
 package org.springframework.security.oauth2.provider.client;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -35,17 +36,21 @@ public class ClientCredentialsTokenEndpointFilterTests {
 	private AuthenticationManager authenticationManager = Mockito
 			.mock(AuthenticationManager.class);
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test
 	public void testAuthenticationManagerNeeded() {
-		new ClientCredentialsTokenEndpointFilter().afterPropertiesSet();
+		assertThrows(IllegalArgumentException.class, () -> {
+			new ClientCredentialsTokenEndpointFilter().afterPropertiesSet();
+		});
 	}
 
-	@Test(expected = BadCredentialsException.class)
+	@Test
 	public void testFailedAuthentication() throws Exception {
-		filter.setAuthenticationManager(authenticationManager);
-		filter.afterPropertiesSet();
-		filter.attemptAuthentication(new MockHttpServletRequest(),
-				new MockHttpServletResponse());
+		assertThrows(BadCredentialsException.class, () -> {
+			filter.setAuthenticationManager(authenticationManager);
+			filter.afterPropertiesSet();
+			filter.attemptAuthentication(new MockHttpServletRequest(),
+					new MockHttpServletResponse());
+		});
 	}
 
 	@Test

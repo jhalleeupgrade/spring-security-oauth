@@ -13,14 +13,17 @@
 
 package org.springframework.security.oauth2.client;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+
 import org.springframework.mock.http.client.MockClientHttpRequest;
+
+import org.junit.jupiter.api.Test;
 import org.springframework.security.oauth2.client.http.AccessTokenRequiredException;
 import org.springframework.security.oauth2.client.resource.BaseOAuth2ProtectedResourceDetails;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * @author Dave Syer
@@ -34,10 +37,12 @@ public class DefaultOAuth2RequestAuthenticatorTests {
 
 	private DefaultOAuth2ClientContext context = new DefaultOAuth2ClientContext();
 
-	@Test(expected = AccessTokenRequiredException.class)
+	@Test
 	public void missingAccessToken() {
-		BaseOAuth2ProtectedResourceDetails resource = new BaseOAuth2ProtectedResourceDetails();
-		authenticator.authenticate(resource, new DefaultOAuth2ClientContext(), request);
+		assertThrows(AccessTokenRequiredException.class, () -> {
+			BaseOAuth2ProtectedResourceDetails resource = new BaseOAuth2ProtectedResourceDetails();
+			authenticator.authenticate(resource, new DefaultOAuth2ClientContext(), request);
+		});
 	}
 
 	@Test

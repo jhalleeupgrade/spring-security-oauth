@@ -19,13 +19,13 @@ package org.springframework.security.oauth2.common;
 import java.util.Date;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.security.oauth2.common.exceptions.InvalidClientException;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Dave Syer
@@ -39,9 +39,9 @@ public class JsonSerializationTests {
 		accessToken.setExpiration(new Date(System.currentTimeMillis() + 10000));
 		String result = new ObjectMapper().writeValueAsString(accessToken);
 		// System.err.println(result);
-		assertTrue("Wrong token: " + result, result.contains("\"token_type\":\"bearer\""));
-		assertTrue("Wrong token: " + result, result.contains("\"access_token\":\"FOO\""));
-		assertTrue("Wrong token: " + result, result.contains("\"expires_in\":"));
+		assertTrue(result.contains("\"token_type\":\"bearer\""), "Wrong token: " + result);
+		assertTrue(result.contains("\"access_token\":\"FOO\""), "Wrong token: " + result);
+		assertTrue(result.contains("\"expires_in\":"), "Wrong token: " + result);
 	}
 
 	@Test
@@ -51,10 +51,10 @@ public class JsonSerializationTests {
 		accessToken.setExpiration(new Date(System.currentTimeMillis() + 10000));
 		String result = new ObjectMapper().writeValueAsString(accessToken);
 		// System.err.println(result);
-		assertTrue("Wrong token: " + result, result.contains("\"token_type\":\"bearer\""));
-		assertTrue("Wrong token: " + result, result.contains("\"access_token\":\"FOO\""));
-		assertTrue("Wrong token: " + result, result.contains("\"refresh_token\":\"BAR\""));
-		assertTrue("Wrong token: " + result, result.contains("\"expires_in\":"));
+		assertTrue(result.contains("\"token_type\":\"bearer\""), "Wrong token: " + result);
+		assertTrue(result.contains("\"access_token\":\"FOO\""), "Wrong token: " + result);
+		assertTrue(result.contains("\"refresh_token\":\"BAR\""), "Wrong token: " + result);
+		assertTrue(result.contains("\"expires_in\":"), "Wrong token: " + result);
 	}
 
 	@Test
@@ -63,9 +63,9 @@ public class JsonSerializationTests {
 		exception.addAdditionalInformation("foo", "bar");
 		String result = new ObjectMapper().writeValueAsString(exception);
 		// System.err.println(result);
-		assertTrue("Wrong result: "+result, result.contains("\"error\":\"invalid_client\""));
-		assertTrue("Wrong result: "+result, result.contains("\"error_description\":\"FOO\""));
-		assertTrue("Wrong result: "+result, result.contains("\"foo\":\"bar\""));
+		assertTrue(result.contains("\"error\":\"invalid_client\""), "Wrong result: "+result);
+		assertTrue(result.contains("\"error_description\":\"FOO\""), "Wrong result: "+result);
+		assertTrue(result.contains("\"foo\":\"bar\""), "Wrong result: "+result);
 	}
 
 	@Test

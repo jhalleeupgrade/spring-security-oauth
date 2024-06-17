@@ -16,13 +16,13 @@
 
 package org.springframework.security.oauth2.provider.expression;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Collections;
 
-import org.junit.Test;
 import org.springframework.expression.EvaluationContext;
+
+import org.junit.jupiter.api.Test;
 import org.springframework.expression.Expression;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -90,17 +90,19 @@ public class OAuth2WebSecurityExpressionHandlerTests {
 		assertTrue((Boolean) expression.getValue(handler.createEvaluationContext(oAuth2Authentication, invocation)));
 	}
 
-	@Test(expected = AccessDeniedException.class)
+	@Test
 	public void testInsufficientScope() throws Exception {
-		AuthorizationRequest request = new AuthorizationRequest("foo", Collections.singleton("read"));
-		request.setResourceIdsAndAuthoritiesFromClientDetails(new BaseClientDetails("foo", "bar", "",
-				"client_credentials", "ROLE_USER"));
-		OAuth2Request clientAuthentication = request.createOAuth2Request();
-		Authentication userAuthentication = null;
-		OAuth2Authentication oAuth2Authentication = new OAuth2Authentication(clientAuthentication, userAuthentication);
-		OAuth2SecurityExpressionMethods root = new OAuth2SecurityExpressionMethods(oAuth2Authentication);
-		boolean hasAnyScope = root.hasAnyScope("foo");
-		root.throwOnError(hasAnyScope);
+		assertThrows(AccessDeniedException.class, () -> {
+			AuthorizationRequest request = new AuthorizationRequest("foo", Collections.singleton("read"));
+			request.setResourceIdsAndAuthoritiesFromClientDetails(new BaseClientDetails("foo", "bar", "",
+					"client_credentials", "ROLE_USER"));
+			OAuth2Request clientAuthentication = request.createOAuth2Request();
+			Authentication userAuthentication = null;
+			OAuth2Authentication oAuth2Authentication = new OAuth2Authentication(clientAuthentication, userAuthentication);
+			OAuth2SecurityExpressionMethods root = new OAuth2SecurityExpressionMethods(oAuth2Authentication);
+			boolean hasAnyScope = root.hasAnyScope("foo");
+			root.throwOnError(hasAnyScope);
+		});
 	}
 
 	@Test

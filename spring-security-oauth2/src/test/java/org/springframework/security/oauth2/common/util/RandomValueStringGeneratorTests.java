@@ -15,13 +15,12 @@
  */
 package org.springframework.security.oauth2.common.util;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.security.SecureRandom;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests for {@link RandomValueStringGenerator}
@@ -32,7 +31,7 @@ public class RandomValueStringGeneratorTests {
 
     private RandomValueStringGenerator generator;
 
-    @Before
+    @BeforeEach
     public void setup() {
         generator = new RandomValueStringGenerator();
     }
@@ -41,7 +40,7 @@ public class RandomValueStringGeneratorTests {
     public void generate() {
         String value = generator.generate();
         assertNotNull(value);
-        assertEquals("Authorization code is not correct size", 6, value.length());
+        assertEquals(6, value.length(), "Authorization code is not correct size");
     }
 
     @Test
@@ -49,7 +48,7 @@ public class RandomValueStringGeneratorTests {
         generator = new RandomValueStringGenerator(1024);
         String value = generator.generate();
         assertNotNull(value);
-        assertEquals("Authorization code is not correct size", 1024, value.length());
+        assertEquals(1024, value.length(), "Authorization code is not correct size");
     }
 
     @Test
@@ -58,19 +57,21 @@ public class RandomValueStringGeneratorTests {
         new SecureRandom().nextBytes(bytes);
         String value = generator.getAuthorizationCodeString(bytes);
         assertNotNull(value);
-        assertEquals("Authorization code is not correct size", 10, value.length());
+        assertEquals(10, value.length(), "Authorization code is not correct size");
     }
 
     @Test
     public void setLength() {
         generator.setLength(12);
         String value = generator.generate();
-        assertEquals("Authorization code is not correct size", 12, value.length());
+        assertEquals(12, value.length(), "Authorization code is not correct size");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void setLength_NonPositiveNumber() {
-        generator.setLength(-1);
-        generator.generate();
-    }
+		assertThrows(IllegalArgumentException.class, () -> {
+			generator.setLength(-1);
+			generator.generate();
+		});
+	}
 }

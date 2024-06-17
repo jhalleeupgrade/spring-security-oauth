@@ -22,12 +22,11 @@ import java.lang.annotation.Target;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
-import org.springframework.security.oauth2.provider.endpoint.AuthorizationEndpoint;
 import org.springframework.security.oauth2.provider.endpoint.TokenEndpoint;
 import org.springframework.web.servlet.DispatcherServlet;
 
 /**
- * Convenience annotation for enabling an Authorization Server (i.e. an {@link AuthorizationEndpoint} and a
+ * Convenience annotation for enabling an Authorization Server (i.e. an AuthorizationEndpoint and a
  * {@link TokenEndpoint}) in the current application context, which must be a {@link DispatcherServlet} context. Many
  * features of the server can be customized using <code>@Beans</code> of type {@link AuthorizationServerConfigurer}
  * (e.g. by extending {@link AuthorizationServerConfigurerAdapter}). The user is responsible for securing the

@@ -15,17 +15,17 @@
  */
 package org.springframework.security.oauth2.client.discovery;
 
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
+import mockwebserver3.MockResponse;
+import mockwebserver3.MockWebServer;
 import org.apache.http.HttpHeaders;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.springframework.http.MediaType;
 import org.springframework.web.client.RestClientException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Joe Grandja
@@ -33,20 +33,22 @@ import static org.junit.Assert.assertNotNull;
 public class ProviderDiscoveryClientTest {
 	private MockWebServer server;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		this.server = new MockWebServer();
 		this.server.start();
 	}
 
-	@After
+	@AfterEach
 	public void cleanUp() throws Exception {
 		this.server.shutdown();
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void discoverWhenProviderLocationUriInvalidThenThrowIllegalArgumentException() throws Exception {
-		new ProviderDiscoveryClient("invalid-uri");
+		assertThrows(IllegalArgumentException.class, () -> {
+			new ProviderDiscoveryClient("invalid-uri");
+		});
 	}
 
 	@Test
@@ -71,11 +73,13 @@ public class ProviderDiscoveryClientTest {
 		assertEquals("https://springsecurity.login.run.pivotal.io/token_keys", providerConfiguration.getJwkSetUri().toString());
 	}
 
-	@Test(expected = RestClientException.class)
+	@Test
 	public void discoverWhenProviderDoesNotSupportDiscoveryThenThrowRestClientException() throws Exception {
-		this.server.enqueue(new MockResponse().setResponseCode(404));
+		assertThrows(RestClientException.class, () -> {
+			this.server.enqueue(new MockResponse().setResponseCode(404));
 
-		ProviderDiscoveryClient client = new ProviderDiscoveryClient(this.server.url("").toString());
-		client.discover();
+			ProviderDiscoveryClient client = new ProviderDiscoveryClient(this.server.url("").toString());
+			client.discover();
+		});
 	}
 }

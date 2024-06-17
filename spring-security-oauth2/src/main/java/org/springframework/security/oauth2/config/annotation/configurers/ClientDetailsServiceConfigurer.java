@@ -15,51 +15,42 @@
  */
 package org.springframework.security.oauth2.config.annotation.configurers;
 
-import javax.sql.DataSource;
-
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.builders.ClientDetailsServiceBuilder;
 import org.springframework.security.oauth2.config.annotation.builders.InMemoryClientDetailsServiceBuilder;
-import org.springframework.security.oauth2.config.annotation.builders.JdbcClientDetailsServiceBuilder;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 
 /**
  * <p>
- * @deprecated See the <a href="https://github.com/spring-projects/spring-security/wiki/OAuth-2.0-Migration-Guide">OAuth 2.0 Migration Guide</a> for Spring Security 5.
  *
  * @author Rob Winch
- * 
+ * @deprecated See the <a href="https://github.com/spring-projects/spring-security/wiki/OAuth-2.0-Migration-Guide">OAuth 2.0 Migration Guide</a> for Spring Security 5.
  */
 @Deprecated
 public class ClientDetailsServiceConfigurer extends
-		SecurityConfigurerAdapter<ClientDetailsService, ClientDetailsServiceBuilder<?>> {
+        SecurityConfigurerAdapter<ClientDetailsService, ClientDetailsServiceBuilder<?>> {
 
-	public ClientDetailsServiceConfigurer(ClientDetailsServiceBuilder<?> builder) {
-		setBuilder(builder);
-	}
+    public ClientDetailsServiceConfigurer(ClientDetailsServiceBuilder<?> builder) {
+        setBuilder(builder);
+    }
 
-	public ClientDetailsServiceBuilder<?> withClientDetails(ClientDetailsService clientDetailsService) throws Exception {
-		setBuilder(getBuilder().clients(clientDetailsService));
-		return this.and();
-	}
+    public ClientDetailsServiceBuilder<?> withClientDetails(ClientDetailsService clientDetailsService) throws Exception {
+        setBuilder(getBuilder().clients(clientDetailsService));
+        return this.and();
+    }
 
-	public InMemoryClientDetailsServiceBuilder inMemory() throws Exception {
-		InMemoryClientDetailsServiceBuilder next = getBuilder().inMemory();
-		setBuilder(next);
-		return next;
-	}
-	public JdbcClientDetailsServiceBuilder jdbc(DataSource dataSource) throws Exception {
-		JdbcClientDetailsServiceBuilder next = getBuilder().jdbc().dataSource(dataSource);
-		setBuilder(next);
-		return next;
-	}
-	
-	@Override
-	public void init(ClientDetailsServiceBuilder<?> builder) throws Exception {
-	}
+    public InMemoryClientDetailsServiceBuilder inMemory() throws Exception {
+        InMemoryClientDetailsServiceBuilder next = getBuilder().inMemory();
+        setBuilder(next);
+        return next;
+    }
 
-	@Override
-	public void configure(ClientDetailsServiceBuilder<?> builder) throws Exception {
-	}
+    @Override
+    public void init(ClientDetailsServiceBuilder<?> builder) throws Exception {
+    }
+
+    @Override
+    public void configure(ClientDetailsServiceBuilder<?> builder) throws Exception {
+    }
 
 }

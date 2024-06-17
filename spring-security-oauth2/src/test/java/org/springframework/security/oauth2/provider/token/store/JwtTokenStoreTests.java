@@ -1,19 +1,7 @@
 package org.springframework.security.oauth2.provider.token.store;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.oauth2.common.DefaultExpiringOAuth2RefreshToken;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
@@ -29,15 +17,25 @@ import org.springframework.security.oauth2.provider.approval.InMemoryApprovalSto
 import org.springframework.security.oauth2.provider.token.AccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConverter;
 
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 /**
  * @author Dave Syer
  *
  */
 public class JwtTokenStoreTests {
 
-	@Rule
-	public ExpectedException expected = ExpectedException.none();
-
+	
 	private JwtAccessTokenConverter enhancer = new JwtAccessTokenConverter();
 
 	private JwtTokenStore tokenStore = new JwtTokenStore(enhancer);
@@ -55,7 +53,7 @@ public class JwtTokenStoreTests {
 
 	private OAuth2AccessToken expectedOAuth2RefreshToken;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		enhancer.afterPropertiesSet();
 		DefaultOAuth2AccessToken original = new DefaultOAuth2AccessToken("testToken");
@@ -74,7 +72,7 @@ public class JwtTokenStoreTests {
 	@Test
 	public void testAccessTokenCannotBeExtractedFromAuthentication() throws Exception {
 		OAuth2AccessToken accessToken = tokenStore.getAccessToken(expectedAuthentication);
-		assertEquals(null, accessToken);
+		assertNull(accessToken);
 	}
 
 	@Test
@@ -82,14 +80,18 @@ public class JwtTokenStoreTests {
 		assertEquals(expectedOAuth2AccessToken, tokenStore.readAccessToken(expectedOAuth2AccessToken.getValue()));
 	}
 
-	@Test(expected = InvalidTokenException.class)
+	@Test
 	public void testNonAccessTokenNotReadable() throws Exception {
-		assertNull(tokenStore.readAccessToken("FOO"));
+		assertThrows(InvalidTokenException.class, () -> {
+			assertNull(tokenStore.readAccessToken("FOO"));
+		});
 	}
 
-	@Test(expected = InvalidTokenException.class)
+	@Test
 	public void testNonRefreshTokenNotReadable() throws Exception {
-		assertNull(tokenStore.readRefreshToken("FOO"));
+		assertThrows(InvalidTokenException.class, () -> {
+			assertNull(tokenStore.readRefreshToken("FOO"));
+		});
 	}
 
 	@Test
@@ -97,14 +99,14 @@ public class JwtTokenStoreTests {
 		DefaultOAuth2AccessToken original = new DefaultOAuth2AccessToken("FOO");
 		original.setExpiration(new Date());
 		DefaultOAuth2AccessToken token = (DefaultOAuth2AccessToken) enhancer.enhance(original, expectedAuthentication);
-		expected.expect(InvalidTokenException.class);
-		assertNull(tokenStore.readRefreshToken(token.getValue()));
+		assertThatThrownBy(() -> tokenStore.readRefreshToken(token.getValue()))
+				.isInstanceOf(InvalidTokenException.class);
 	}
 
 	@Test
 	public void testRefreshTokenIsNotAnAccessToken() throws Exception {
-		expected.expect(InvalidTokenException.class);
-		assertNull(tokenStore.readAccessToken(expectedOAuth2RefreshToken.getValue()));
+		assertThatThrownBy(() -> tokenStore.readAccessToken(expectedOAuth2RefreshToken.getValue()))
+				.isInstanceOf(InvalidTokenException.class);
 	}
 
 	@Test
@@ -199,7 +201,7 @@ public class JwtTokenStoreTests {
 		approvalStore.addApprovals(Collections.singleton(new Approval("test", "id", "write", new Date(),
 				ApprovalStatus.APPROVED)));
 		assertEquals(1, approvalStore.getApprovals("test", "id").size());
-		assertEquals(null, tokenStore.readRefreshToken(expectedOAuth2RefreshToken.getValue()));
+		assertNull(tokenStore.readRefreshToken(expectedOAuth2RefreshToken.getValue()));
 	}
 
 	private void checkAuthentications(OAuth2Authentication expected, OAuth2Authentication actual) {

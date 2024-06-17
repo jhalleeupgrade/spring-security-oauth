@@ -14,7 +14,7 @@
 
 package org.springframework.security.oauth2.provider.authentication;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 

@@ -12,14 +12,15 @@
  */
 package org.springframework.security.oauth2.provider.token.store;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Collection;
 import java.util.Date;
 import java.util.UUID;
 
-import org.junit.Test;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
+
+import org.junit.jupiter.api.Test;
 import org.springframework.security.oauth2.common.DefaultExpiringOAuth2RefreshToken;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.DefaultOAuth2RefreshToken;
@@ -88,7 +89,7 @@ public abstract class TokenStoreBaseTests {
 		assertEquals(expectedOAuth2AccessToken, actualOAuth2AccessToken);
 		assertEquals(authentication.getUserAuthentication(), getTokenStore().readAuthentication(expectedOAuth2AccessToken.getValue()).getUserAuthentication());
 		// The authorizationRequest does not match because it is unapproved, but the token was granted to an approved request
-		assertFalse(storedOAuth2Request.equals(getTokenStore().readAuthentication(expectedOAuth2AccessToken.getValue()).getOAuth2Request()));
+		assertNotEquals(storedOAuth2Request, getTokenStore().readAuthentication(expectedOAuth2AccessToken.getValue()).getOAuth2Request());
 		actualOAuth2AccessToken = getTokenStore().getAccessToken(authentication);
 		assertEquals(expectedOAuth2AccessToken, actualOAuth2AccessToken);
 		getTokenStore().removeAccessToken(expectedOAuth2AccessToken);
@@ -180,7 +181,7 @@ public abstract class TokenStoreBaseTests {
 		// deleted and re-created.
 		assertEquals(anotherAuthentication.getUserAuthentication(), getTokenStore().readAuthentication(expectedOAuth2AccessToken.getValue()).getUserAuthentication());
 		// The authorizationRequest does not match because it is unapproved, but the token was granted to an approved request
-		assertFalse(storedOAuth2Request.equals(getTokenStore().readAuthentication(expectedOAuth2AccessToken.getValue()).getOAuth2Request()));
+		assertNotEquals(storedOAuth2Request, getTokenStore().readAuthentication(expectedOAuth2AccessToken.getValue()).getOAuth2Request());
 	}
 
 	@Test

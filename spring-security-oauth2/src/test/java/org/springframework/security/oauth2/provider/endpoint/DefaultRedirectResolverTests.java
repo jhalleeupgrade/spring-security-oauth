@@ -15,16 +15,16 @@
  */
 package org.springframework.security.oauth2.provider.endpoint;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.springframework.security.oauth2.common.exceptions.InvalidGrantException;
 import org.springframework.security.oauth2.common.exceptions.InvalidRequestException;
 import org.springframework.security.oauth2.common.exceptions.RedirectMismatchException;
@@ -39,7 +39,7 @@ public class DefaultRedirectResolverTests {
 
 	private BaseClientDetails client;
 
-	@Before
+	@BeforeEach
 	public void setup() {
 		client = new BaseClientDetails();
 		client.setAuthorizedGrantTypes(Collections.singleton("authorization_code"));
@@ -54,10 +54,12 @@ public class DefaultRedirectResolverTests {
 		assertEquals(requestedRedirect, resolver.resolveRedirect(requestedRedirect, client));
 	}
 
-	@Test(expected = InvalidRequestException.class)
+	@Test
 	public void testRedirectWithNoRegisteredValue() throws Exception {
-		String requestedRedirect = "https://anywhere.com/myendpoint";
-		resolver.resolveRedirect(requestedRedirect, client);
+		assertThrows(InvalidRequestException.class, () -> {
+			String requestedRedirect = "https://anywhere.com/myendpoint";
+			resolver.resolveRedirect(requestedRedirect, client);
+		});
 	}
 
 	// If only one redirect has been registered, then we should use it
@@ -69,68 +71,84 @@ public class DefaultRedirectResolverTests {
 	}
 
 	// If multiple redirects registered, then we should get an exception
-	@Test(expected = RedirectMismatchException.class)
+	@Test
 	public void testRedirectWithNoRequestedValueAndMultipleRegistered() throws Exception {
-		Set<String> redirectUris = new HashSet<String>(Arrays.asList("https://anywhere.com", "https://nowhere.com"));
-		client.setRegisteredRedirectUri(redirectUris);
-		resolver.resolveRedirect(null, client);
+		assertThrows(RedirectMismatchException.class, () -> {
+			Set<String> redirectUris = new HashSet<String>(Arrays.asList("https://anywhere.com", "https://nowhere.com"));
+			client.setRegisteredRedirectUri(redirectUris);
+			resolver.resolveRedirect(null, client);
+		});
 	}
 
-	@Test(expected = InvalidGrantException.class)
+	@Test
 	public void testNoGrantType() throws Exception {
-		Set<String> redirectUris = new HashSet<String>(Arrays.asList("https://anywhere.com", "https://nowhere.com"));
-		client.setRegisteredRedirectUri(redirectUris);
-		client.setAuthorizedGrantTypes(Collections.<String>emptyList());
-		resolver.resolveRedirect(null, client);
+		assertThrows(InvalidGrantException.class, () -> {
+			Set<String> redirectUris = new HashSet<String>(Arrays.asList("https://anywhere.com", "https://nowhere.com"));
+			client.setRegisteredRedirectUri(redirectUris);
+			client.setAuthorizedGrantTypes(Collections.<String>emptyList());
+			resolver.resolveRedirect(null, client);
+		});
 	}
 
-	@Test(expected = InvalidGrantException.class)
+	@Test
 	public void testWrongGrantType() throws Exception {
-		Set<String> redirectUris = new HashSet<String>(Arrays.asList("https://anywhere.com", "https://nowhere.com"));
-		client.setRegisteredRedirectUri(redirectUris);
-		client.setAuthorizedGrantTypes(Collections.singleton("client_credentials"));
-		resolver.resolveRedirect(null, client);
+		assertThrows(InvalidGrantException.class, () -> {
+			Set<String> redirectUris = new HashSet<String>(Arrays.asList("https://anywhere.com", "https://nowhere.com"));
+			client.setRegisteredRedirectUri(redirectUris);
+			client.setAuthorizedGrantTypes(Collections.singleton("client_credentials"));
+			resolver.resolveRedirect(null, client);
+		});
 	}
 
-	@Test(expected = InvalidGrantException.class)
+	@Test
 	public void testWrongCustomGrantType() throws Exception {
-		resolver.setRedirectGrantTypes(Collections.singleton("foo"));
-		Set<String> redirectUris = new HashSet<String>(Arrays.asList("https://anywhere.com", "https://nowhere.com"));
-		client.setRegisteredRedirectUri(redirectUris);
-		resolver.resolveRedirect(null, client);
+		assertThrows(InvalidGrantException.class, () -> {
+			resolver.setRedirectGrantTypes(Collections.singleton("foo"));
+			Set<String> redirectUris = new HashSet<String>(Arrays.asList("https://anywhere.com", "https://nowhere.com"));
+			client.setRegisteredRedirectUri(redirectUris);
+			resolver.resolveRedirect(null, client);
+		});
 	}
 
-	@Test(expected = RedirectMismatchException.class)
+	@Test
 	public void testRedirectNotMatching() throws Exception {
-		Set<String> redirectUris = new HashSet<String>(Arrays.asList("https://nowhere.com"));
-		String requestedRedirect = "https://anywhere.com/myendpoint";
-		client.setRegisteredRedirectUri(redirectUris);
-		assertEquals(redirectUris.iterator().next(), resolver.resolveRedirect(requestedRedirect, client));
+		assertThrows(RedirectMismatchException.class, () -> {
+			Set<String> redirectUris = new HashSet<String>(Arrays.asList("https://nowhere.com"));
+			String requestedRedirect = "https://anywhere.com/myendpoint";
+			client.setRegisteredRedirectUri(redirectUris);
+			assertEquals(redirectUris.iterator().next(), resolver.resolveRedirect(requestedRedirect, client));
+		});
 	}
 
-	@Test(expected = RedirectMismatchException.class)
+	@Test
 	public void testRedirectNotMatchingWithTraversal() throws Exception {
-		Set<String> redirectUris = new HashSet<String>(Arrays.asList("https://anywhere.com/foo"));
-		String requestedRedirect = "https://anywhere.com/foo/../bar";
-		client.setRegisteredRedirectUri(redirectUris);
-		assertEquals(redirectUris.iterator().next(), resolver.resolveRedirect(requestedRedirect, client));
+		assertThrows(RedirectMismatchException.class, () -> {
+			Set<String> redirectUris = new HashSet<String>(Arrays.asList("https://anywhere.com/foo"));
+			String requestedRedirect = "https://anywhere.com/foo/../bar";
+			client.setRegisteredRedirectUri(redirectUris);
+			assertEquals(redirectUris.iterator().next(), resolver.resolveRedirect(requestedRedirect, client));
+		});
 	}
 
 	// gh-1331
-	@Test(expected = RedirectMismatchException.class)
+	@Test
 	public void testRedirectNotMatchingWithHexEncodedTraversal() throws Exception {
-		Set<String> redirectUris = new HashSet<String>(Arrays.asList("https://anywhere.com/foo"));
-		client.setRegisteredRedirectUri(redirectUris);
-		String requestedRedirect = "https://anywhere.com/foo/%2E%2E";	// hexadecimal encoding of '..' represents '%2E%2E'
-		resolver.resolveRedirect(requestedRedirect, client);
+		assertThrows(RedirectMismatchException.class, () -> {
+			Set<String> redirectUris = new HashSet<String>(Arrays.asList("https://anywhere.com/foo"));
+			client.setRegisteredRedirectUri(redirectUris);
+			String requestedRedirect = "https://anywhere.com/foo/%2E%2E";	// hexadecimal encoding of '..' represents '%2E%2E'
+			resolver.resolveRedirect(requestedRedirect, client);
+		});
 	}
 
 	// gh-747
-	@Test(expected = RedirectMismatchException.class)
+	@Test
 	public void testRedirectNotMatchingSubdomain() throws Exception {
-		Set<String> redirectUris = new HashSet<String>(Arrays.asList("https://anywhere.com/foo"));
-		client.setRegisteredRedirectUri(redirectUris);
-		resolver.resolveRedirect("https://2anywhere.com/foo", client);
+		assertThrows(RedirectMismatchException.class, () -> {
+			Set<String> redirectUris = new HashSet<String>(Arrays.asList("https://anywhere.com/foo"));
+			client.setRegisteredRedirectUri(redirectUris);
+			resolver.resolveRedirect("https://2anywhere.com/foo", client);
+		});
 	}
 
 	// gh-747
@@ -144,19 +162,23 @@ public class DefaultRedirectResolverTests {
 		assertEquals(requestedRedirect, resolver.resolveRedirect(requestedRedirect, client));
 	}
 
-	@Test(expected = RedirectMismatchException.class)
+	@Test
 	public void testRedirectMatchSubdomainsDefaultsFalse() {
-		Set<String> redirectUris = new HashSet<String>(Arrays.asList("https://anywhere.com"));
-		client.setRegisteredRedirectUri(redirectUris);
-		resolver.resolveRedirect("https://2.anywhere.com", client);
+		assertThrows(RedirectMismatchException.class, () -> {
+			Set<String> redirectUris = new HashSet<String>(Arrays.asList("https://anywhere.com"));
+			client.setRegisteredRedirectUri(redirectUris);
+			resolver.resolveRedirect("https://2.anywhere.com", client);
+		});
 	}
 
 	// gh-746
-	@Test(expected = RedirectMismatchException.class)
+	@Test
 	public void testRedirectNotMatchingPort() throws Exception {
-		Set<String> redirectUris = new HashSet<String>(Arrays.asList("https://anywhere.com:90"));
-		client.setRegisteredRedirectUri(redirectUris);
-		resolver.resolveRedirect("https://anywhere.com:91/foo", client);
+		assertThrows(RedirectMismatchException.class, () -> {
+			Set<String> redirectUris = new HashSet<String>(Arrays.asList("https://anywhere.com:90"));
+			client.setRegisteredRedirectUri(redirectUris);
+			resolver.resolveRedirect("https://anywhere.com:91/foo", client);
+		});
 	}
 
 	// gh-746
@@ -169,19 +191,23 @@ public class DefaultRedirectResolverTests {
 	}
 
 	// gh-746
-	@Test(expected = RedirectMismatchException.class)
+	@Test
 	public void testRedirectRegisteredPortSetRequestedPortNotSet() throws Exception {
-		Set<String> redirectUris = new HashSet<String>(Arrays.asList("https://anywhere.com:90"));
-		client.setRegisteredRedirectUri(redirectUris);
-		resolver.resolveRedirect("https://anywhere.com/foo", client);
+		assertThrows(RedirectMismatchException.class, () -> {
+			Set<String> redirectUris = new HashSet<String>(Arrays.asList("https://anywhere.com:90"));
+			client.setRegisteredRedirectUri(redirectUris);
+			resolver.resolveRedirect("https://anywhere.com/foo", client);
+		});
 	}
 
 	// gh-746
-	@Test(expected = RedirectMismatchException.class)
+	@Test
 	public void testRedirectRegisteredPortNotSetRequestedPortSet() throws Exception {
-		Set<String> redirectUris = new HashSet<String>(Arrays.asList("https://anywhere.com"));
-		client.setRegisteredRedirectUri(redirectUris);
-		resolver.resolveRedirect("https://anywhere.com:8443/foo", client);
+		assertThrows(RedirectMismatchException.class, () -> {
+			Set<String> redirectUris = new HashSet<String>(Arrays.asList("https://anywhere.com"));
+			client.setRegisteredRedirectUri(redirectUris);
+			resolver.resolveRedirect("https://anywhere.com:8443/foo", client);
+		});
 	}
 
 	// gh-746
@@ -209,23 +235,27 @@ public class DefaultRedirectResolverTests {
 	}
 
 	// gh-1566
-	@Test(expected = RedirectMismatchException.class)
+	@Test
 	public void testRedirectRegisteredUserInfoNotMatching() throws Exception {
-		Set<String> redirectUris = new HashSet<String>(Arrays.asList("https://userinfo@anywhere.com"));
-		client.setRegisteredRedirectUri(redirectUris);
-		resolver.resolveRedirect("https://otheruserinfo@anywhere.com", client);
+		assertThrows(RedirectMismatchException.class, () -> {
+			Set<String> redirectUris = new HashSet<String>(Arrays.asList("https://userinfo@anywhere.com"));
+			client.setRegisteredRedirectUri(redirectUris);
+			resolver.resolveRedirect("https://otheruserinfo@anywhere.com", client);
+		});
 	}
 
 	// gh-1566
-	@Test(expected = RedirectMismatchException.class)
+	@Test
 	public void testRedirectRegisteredNoUserInfoNotMatching() throws Exception {
-		Set<String> redirectUris = new HashSet<String>(Arrays.asList("https://userinfo@anywhere.com"));
-		client.setRegisteredRedirectUri(redirectUris);
-		resolver.resolveRedirect("https://anywhere.com", client);
+		assertThrows(RedirectMismatchException.class, () -> {
+			Set<String> redirectUris = new HashSet<String>(Arrays.asList("https://userinfo@anywhere.com"));
+			client.setRegisteredRedirectUri(redirectUris);
+			resolver.resolveRedirect("https://anywhere.com", client);
+		});
 	}
 
 	// gh-1566
-	@Test()
+	@Test
 	public void testRedirectRegisteredUserInfoMatching() throws Exception {
 		Set<String> redirectUris = new HashSet<String>(Arrays.asList("https://userinfo@anywhere.com"));
 		client.setRegisteredRedirectUri(redirectUris);
@@ -234,7 +264,7 @@ public class DefaultRedirectResolverTests {
 	}
 
 	// gh-1566
-	@Test()
+	@Test
 	public void testRedirectRegisteredFragmentIgnoredAndStripped() throws Exception {
 		Set<String> redirectUris = new HashSet<String>(Arrays.asList("https://userinfo@anywhere.com/foo/bar#baz"));
 		client.setRegisteredRedirectUri(redirectUris);
@@ -243,7 +273,7 @@ public class DefaultRedirectResolverTests {
 	}
 
 	// gh-1566
-	@Test()
+	@Test
 	public void testRedirectRegisteredQueryParamsMatching() throws Exception {
 		Set<String> redirectUris = new HashSet<String>(Arrays.asList("https://anywhere.com/?p1=v1&p2=v2"));
 		client.setRegisteredRedirectUri(redirectUris);
@@ -252,7 +282,7 @@ public class DefaultRedirectResolverTests {
 	}
 
 	// gh-1566
-	@Test()
+	@Test
 	public void testRedirectRegisteredQueryParamsMatchingIgnoringAdditionalParams() throws Exception {
 		Set<String> redirectUris = new HashSet<String>(Arrays.asList("https://anywhere.com/?p1=v1&p2=v2"));
 		client.setRegisteredRedirectUri(redirectUris);
@@ -261,7 +291,7 @@ public class DefaultRedirectResolverTests {
 	}
 
 	// gh-1566
-	@Test()
+	@Test
 	public void testRedirectRegisteredQueryParamsMatchingDifferentOrder() throws Exception {
 		Set<String> redirectUris = new HashSet<String>(Arrays.asList("https://anywhere.com/?p1=v1&p2=v2"));
 		client.setRegisteredRedirectUri(redirectUris);
@@ -270,27 +300,33 @@ public class DefaultRedirectResolverTests {
 	}
 
 	// gh-1566
-	@Test(expected = RedirectMismatchException.class)
+	@Test
 	public void testRedirectRegisteredQueryParamsWithDifferentValues() throws Exception {
-		Set<String> redirectUris = new HashSet<String>(Arrays.asList("https://anywhere.com/?p1=v1&p2=v2"));
-		client.setRegisteredRedirectUri(redirectUris);
-		resolver.resolveRedirect("https://anywhere.com/?p1=v1&p2=v3", client);
+		assertThrows(RedirectMismatchException.class, () -> {
+			Set<String> redirectUris = new HashSet<String>(Arrays.asList("https://anywhere.com/?p1=v1&p2=v2"));
+			client.setRegisteredRedirectUri(redirectUris);
+			resolver.resolveRedirect("https://anywhere.com/?p1=v1&p2=v3", client);
+		});
 	}
 
 	// gh-1566
-	@Test(expected = RedirectMismatchException.class)
+	@Test
 	public void testRedirectRegisteredQueryParamsNotMatching() throws Exception {
-		Set<String> redirectUris = new HashSet<String>(Arrays.asList("https://anywhere.com/?p1=v1"));
-		client.setRegisteredRedirectUri(redirectUris);
-		resolver.resolveRedirect("https://anywhere.com/?p2=v2", client);
+		assertThrows(RedirectMismatchException.class, () -> {
+			Set<String> redirectUris = new HashSet<String>(Arrays.asList("https://anywhere.com/?p1=v1"));
+			client.setRegisteredRedirectUri(redirectUris);
+			resolver.resolveRedirect("https://anywhere.com/?p2=v2", client);
+		});
 	}
 
 	// gh-1566
-	@Test(expected = RedirectMismatchException.class)
+	@Test
 	public void testRedirectRegisteredQueryParamsPartiallyMatching() throws Exception {
-		Set<String> redirectUris = new HashSet<String>(Arrays.asList("https://anywhere.com/?p1=v1&p2=v2"));
-		client.setRegisteredRedirectUri(redirectUris);
-		resolver.resolveRedirect("https://anywhere.com/?p2=v2&p3=v3", client);
+		assertThrows(RedirectMismatchException.class, () -> {
+			Set<String> redirectUris = new HashSet<String>(Arrays.asList("https://anywhere.com/?p1=v1&p2=v2"));
+			client.setRegisteredRedirectUri(redirectUris);
+			resolver.resolveRedirect("https://anywhere.com/?p2=v2&p3=v3", client);
+		});
 	}
 
 	// gh-1566

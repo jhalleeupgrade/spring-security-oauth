@@ -1,10 +1,6 @@
 package org.springframework.security.oauth2.client;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -13,8 +9,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -54,7 +50,7 @@ public class OAuth2RestTemplateTests {
 
 	private HttpHeaders headers;
 
-	@Before
+	@BeforeEach
 	public void open() throws Exception {
 		resource = new BaseOAuth2ProtectedResourceDetails();
 		// Facebook and older specs:
@@ -161,16 +157,18 @@ public class OAuth2RestTemplateTests {
 		assertEquals("https://graph.facebook.com/search?bearer_token=1+qI%2Bx%3Ay%3Dz", appended.toString());
 	}
 
-	@Test(expected = AccessTokenRequiredException.class)
+	@Test
 	public void testNoRetryAccessDeniedExceptionForNoExistingToken() throws Exception {
-		restTemplate.setAccessTokenProvider(new StubAccessTokenProvider());
-		restTemplate.setRequestFactory(new ClientHttpRequestFactory() {
-			public ClientHttpRequest createRequest(URI uri, HttpMethod httpMethod) throws IOException {
-				throw new AccessTokenRequiredException(resource);
-			}
+		assertThrows(AccessTokenRequiredException.class, () -> {
+			restTemplate.setAccessTokenProvider(new StubAccessTokenProvider());
+			restTemplate.setRequestFactory(new ClientHttpRequestFactory() {
+				public ClientHttpRequest createRequest(URI uri, HttpMethod httpMethod) throws IOException {
+					throw new AccessTokenRequiredException(resource);
+				}
+			});
+			restTemplate.doExecute(new URI("https://foo"), HttpMethod.GET, new NullRequestCallback(),
+					new SimpleResponseExtractor());
 		});
-		restTemplate.doExecute(new URI("https://foo"), HttpMethod.GET, new NullRequestCallback(),
-				new SimpleResponseExtractor());
 	}
 
 	@Test
@@ -200,7 +198,7 @@ public class OAuth2RestTemplateTests {
 		restTemplate.setAccessTokenProvider(new StubAccessTokenProvider());
 		OAuth2AccessToken newToken = restTemplate.getAccessToken();
 		assertNotNull(newToken);
-		assertTrue(!token.equals(newToken));
+		assertNotEquals(token, newToken);
 	}
 
 	// gh-1478
@@ -212,7 +210,7 @@ public class OAuth2RestTemplateTests {
 		restTemplate.setAccessTokenProvider(new StubAccessTokenProvider());
 		OAuth2AccessToken newToken = restTemplate.getAccessToken();
 		assertNotNull(newToken);
-		assertTrue(!token.equals(newToken));
+		assertNotEquals(token, newToken);
 	}
 
 	// gh-1478
@@ -225,7 +223,7 @@ public class OAuth2RestTemplateTests {
 		restTemplate.setAccessTokenProvider(new StubAccessTokenProvider());
 		OAuth2AccessToken newToken = restTemplate.getAccessToken();
 		assertNotNull(newToken);
-		assertTrue(!token.equals(newToken));
+		assertNotEquals(token, newToken);
 	}
 
 	// gh-1478
@@ -238,13 +236,15 @@ public class OAuth2RestTemplateTests {
 		restTemplate.setAccessTokenProvider(new StubAccessTokenProvider());
 		OAuth2AccessToken newToken = restTemplate.getAccessToken();
 		assertNotNull(newToken);
-		assertTrue(token.equals(newToken));
+		assertEquals(token, newToken);
 	}
 
 	// gh-1478
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testNegativeClockSkew() {
-		restTemplate.setClockSkew(-1);
+		assertThrows(IllegalArgumentException.class, () -> {
+			restTemplate.setClockSkew(-1);
+		});
 	}
 
 	// gh-1909

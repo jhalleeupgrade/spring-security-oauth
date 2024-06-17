@@ -1,14 +1,13 @@
 package org.springframework.security.oauth2.provider.token;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Collections;
 import java.util.Date;
 
-import org.junit.Test;
 import org.springframework.security.oauth2.common.DefaultExpiringOAuth2RefreshToken;
+
+import org.junit.jupiter.api.Test;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.ExpiringOAuth2RefreshToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
@@ -36,7 +35,7 @@ public abstract class AbstractPersistentDefaultTokenServicesTests extends Abstra
 		});
 		OAuth2Authentication authentication = createAuthentication();
 		OAuth2AccessToken original = getTokenServices().createAccessToken(authentication);
-		assertTrue(original.getRefreshToken().equals(refreshToken));
+		assertEquals(original.getRefreshToken(), refreshToken);
 		OAuth2AccessToken result = getTokenStore().getAccessToken(authentication);
 		assertEquals(original, result);
 		assertEquals(refreshToken, result.getRefreshToken());

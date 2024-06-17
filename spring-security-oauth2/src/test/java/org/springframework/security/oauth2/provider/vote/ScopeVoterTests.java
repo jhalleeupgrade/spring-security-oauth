@@ -16,12 +16,14 @@
 
 package org.springframework.security.oauth2.provider.vote;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Collections;
 
-import org.junit.Test;
 import org.springframework.security.access.AccessDecisionVoter;
+
+import org.junit.jupiter.api.Test;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
@@ -95,14 +97,16 @@ public class ScopeVoterTests {
 						Collections.<ConfigAttribute> singleton(new SecurityConfig("SCOPE_WRITE"))));
 	}
 
-	@Test(expected = AccessDeniedException.class)
+	@Test
 	public void testExceptionThrownIfWrongScopesPresent() throws Exception {
-		OAuth2Request clientAuthentication = RequestTokenFactory.createOAuth2Request("foo", false, Collections.singleton("read"));
-		Authentication userAuthentication = null;
-		OAuth2Authentication oAuth2Authentication = new OAuth2Authentication(clientAuthentication, userAuthentication);
-		assertEquals(
-				AccessDecisionVoter.ACCESS_DENIED,
-				voter.vote(oAuth2Authentication, null,
-						Collections.<ConfigAttribute> singleton(new SecurityConfig("SCOPE_WRITE"))));
+		assertThrows(AccessDeniedException.class, () -> {
+			OAuth2Request clientAuthentication = RequestTokenFactory.createOAuth2Request("foo", false, Collections.singleton("read"));
+			Authentication userAuthentication = null;
+			OAuth2Authentication oAuth2Authentication = new OAuth2Authentication(clientAuthentication, userAuthentication);
+			assertEquals(
+					AccessDecisionVoter.ACCESS_DENIED,
+					voter.vote(oAuth2Authentication, null,
+							Collections.<ConfigAttribute>singleton(new SecurityConfig("SCOPE_WRITE"))));
+		});
 	}
 }

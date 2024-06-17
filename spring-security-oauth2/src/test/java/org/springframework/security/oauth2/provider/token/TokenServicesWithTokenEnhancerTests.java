@@ -13,8 +13,9 @@
 
 package org.springframework.security.oauth2.provider.token;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -32,11 +33,11 @@ import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenCo
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
 import java.util.Arrays;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * @author Dave Syer
@@ -57,7 +58,7 @@ public class TokenServicesWithTokenEnhancerTests {
 
 	private OAuth2Authentication authentication = new OAuth2Authentication(request, user);
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		tokenServices = new DefaultTokenServices();
 		tokenServices.setClientDetailsService(new InMemoryClientDetailsServiceBuilder().withClient("client")

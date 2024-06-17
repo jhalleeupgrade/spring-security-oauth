@@ -12,12 +12,13 @@
  */
 package org.springframework.security.oauth2.provider.approval;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
 
-import org.junit.Test;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
+
+import org.junit.jupiter.api.Test;
 import org.springframework.security.oauth2.provider.AuthorizationRequest;
 
 /**

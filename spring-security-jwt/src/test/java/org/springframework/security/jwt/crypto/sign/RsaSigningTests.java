@@ -12,21 +12,26 @@
  */
 package org.springframework.security.jwt.crypto.sign;
 
-import org.junit.Test;
-import org.springframework.security.jwt.codec.Codecs;
-import org.springframework.security.jwt.crypto.cipher.RsaTestKeyData;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import static org.junit.Assert.assertNotNull;
+
+import org.springframework.security.jwt.codec.Codecs;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.security.jwt.crypto.cipher.RsaTestKeyData;
 
 /**
  * @author Luke Taylor
  */
 public class RsaSigningTests {
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void rsaSignerRejectsInvalidKey() throws Exception {
-		RsaSigner signer = new RsaSigner(RsaTestKeyData.SSH_PUBLIC_KEY_STRING);
-		assertNotNull(signer);
+		assertThrows(IllegalArgumentException.class, () -> {
+			RsaSigner signer = new RsaSigner(RsaTestKeyData.SSH_PUBLIC_KEY_STRING);
+			assertNotNull(signer);
+		});
 	}
 
 	@Test

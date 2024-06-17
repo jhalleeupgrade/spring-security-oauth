@@ -13,10 +13,7 @@
 
 package org.springframework.security.oauth2.provider.token;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -25,8 +22,9 @@ import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.oauth2.common.DefaultExpiringOAuth2RefreshToken;
 import org.springframework.security.oauth2.common.ExpiringOAuth2RefreshToken;
@@ -54,7 +52,7 @@ public abstract class AbstractDefaultTokenServicesTests {
 
 	private TokenStore tokenStore;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		tokenStore = createTokenStore();
 		services = new DefaultTokenServices();
@@ -79,35 +77,39 @@ public abstract class AbstractDefaultTokenServicesTests {
 		assertTrue(expectedExpiryDate.after(refreshToken.getExpiration()));
 	}
 
-	@Test(expected = InvalidTokenException.class)
+	@Test
 	public void testClientInvalidated() throws Exception {
-		final AtomicBoolean deleted = new AtomicBoolean();
-		getTokenServices().setClientDetailsService(new ClientDetailsService() {
-			public ClientDetails loadClientByClientId(String clientId) throws OAuth2Exception {
-				if (deleted.get()) {
-					throw new ClientRegistrationException("No such client: " + clientId);
+		assertThrows(InvalidTokenException.class, () -> {
+			final AtomicBoolean deleted = new AtomicBoolean();
+			getTokenServices().setClientDetailsService(new ClientDetailsService() {
+				public ClientDetails loadClientByClientId(String clientId) throws OAuth2Exception {
+					if (deleted.get()) {
+						throw new ClientRegistrationException("No such client: " + clientId);
+					}
+					BaseClientDetails client = new BaseClientDetails();
+					client.setRefreshTokenValiditySeconds(100);
+					client.setAuthorizedGrantTypes(Arrays.asList("authorization_code", "refresh_token"));
+					return client;
 				}
-				BaseClientDetails client = new BaseClientDetails();
-				client.setRefreshTokenValiditySeconds(100);
-				client.setAuthorizedGrantTypes(Arrays.asList("authorization_code", "refresh_token"));
-				return client;
-			}
+			});
+			OAuth2AccessToken token = getTokenServices().createAccessToken(createAuthentication());
+			deleted.set(true);
+			OAuth2Authentication authentication = getTokenServices().loadAuthentication(token.getValue());
+			assertNotNull(authentication.getOAuth2Request());
 		});
-		OAuth2AccessToken token = getTokenServices().createAccessToken(createAuthentication());
-		deleted.set(true);
-		OAuth2Authentication authentication = getTokenServices().loadAuthentication(token.getValue());
-		assertNotNull(authentication.getOAuth2Request());
 	}
 
-	@Test(expected = InvalidGrantException.class)
+	@Test
 	public void testRefreshedTokenInvalidWithWrongClient() throws Exception {
-		ExpiringOAuth2RefreshToken expectedExpiringRefreshToken = (ExpiringOAuth2RefreshToken) getTokenServices()
-				.createAccessToken(createAuthentication()).getRefreshToken();
-		TokenRequest tokenRequest = new TokenRequest(Collections.singletonMap("client_id", "wrong"), "wrong", null,
-				null);
-		OAuth2AccessToken refreshedAccessToken = getTokenServices()
-				.refreshAccessToken(expectedExpiringRefreshToken.getValue(), tokenRequest);
-		assertEquals("[read]", refreshedAccessToken.getScope().toString());
+		assertThrows(InvalidGrantException.class, () -> {
+			ExpiringOAuth2RefreshToken expectedExpiringRefreshToken = (ExpiringOAuth2RefreshToken)getTokenServices()
+					.createAccessToken(createAuthentication()).getRefreshToken();
+			TokenRequest tokenRequest = new TokenRequest(Collections.singletonMap("client_id", "wrong"), "wrong", null,
+					null);
+			OAuth2AccessToken refreshedAccessToken = getTokenServices()
+					.refreshAccessToken(expectedExpiringRefreshToken.getValue(), tokenRequest);
+			assertEquals("[read]", refreshedAccessToken.getScope().toString());
+		});
 	}
 
 	@Test
@@ -165,7 +167,7 @@ public abstract class AbstractDefaultTokenServicesTests {
 		getTokenServices().setAccessTokenValiditySeconds(0);
 		OAuth2AccessToken accessToken = getTokenServices().createAccessToken(createAuthentication());
 		assertEquals(0, accessToken.getExpiresIn());
-		assertEquals(null, accessToken.getExpiration());
+		assertNull(accessToken.getExpiration());
 	}
 
 	@Test

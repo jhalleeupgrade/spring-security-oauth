@@ -1,8 +1,7 @@
 package org.springframework.security.oauth2.provider.token;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,27 +27,32 @@ import org.springframework.security.web.authentication.preauth.PreAuthenticatedA
 
 import java.util.Arrays;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 public class DefaultTokenServicesTests {
 
 	private DefaultTokenServices services;
 	private TokenStore tokenStore = Mockito.mock(TokenStore.class);
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		services = new DefaultTokenServices();
 		services.setTokenStore(tokenStore);
 		services.afterPropertiesSet();
 	}
 
-	@Test(expected = InvalidTokenException.class)
+	@Test
 	public void testAccidentalNullAuthentication() {
-		Mockito.when(tokenStore.readAccessToken(Mockito.anyString())).thenReturn(
-				new DefaultOAuth2AccessToken("FOO"));
-		// A bug in the TokenStore or a race condition could lead to the authentication
-		// being null even if the token is not:
-		Mockito.when(tokenStore.readAuthentication(Mockito.any(OAuth2AccessToken.class)))
-				.thenReturn(null);
-		services.loadAuthentication("FOO");
+		assertThrows(InvalidTokenException.class, () -> {
+			Mockito.when(tokenStore.readAccessToken(Mockito.anyString())).thenReturn(
+					new DefaultOAuth2AccessToken("FOO"));
+			// A bug in the TokenStore or a race condition could lead to the authentication
+			// being null even if the token is not:
+			Mockito.when(tokenStore.readAuthentication(Mockito.any(OAuth2AccessToken.class)))
+					.thenReturn(null);
+			services.loadAuthentication("FOO");
+		});
 	}
 	
 	@Test
@@ -79,8 +83,8 @@ public class DefaultTokenServicesTests {
 		
 		OAuth2Authentication refreshedAuthentication = refreshedAuthenticationCaptor.getValue();
 		Authentication authentication = refreshedAuthentication.getUserAuthentication();
-		Assert.assertEquals(user, authentication.getPrincipal());
-		Assert.assertEquals("some more details", authentication.getDetails());
+		assertEquals(user, authentication.getPrincipal());
+		assertEquals("some more details", authentication.getDetails());
 	}
 
 	@Test
@@ -107,8 +111,8 @@ public class DefaultTokenServicesTests {
 
 		OAuth2Authentication refreshedAuthentication = refreshedAuthenticationCaptor.getValue();
 		Authentication authentication = refreshedAuthentication.getUserAuthentication();
-		Assert.assertEquals(user, authentication.getPrincipal());
-		Assert.assertEquals("some more details", authentication.getDetails());
+		assertEquals(user, authentication.getPrincipal());
+		assertEquals("some more details", authentication.getDetails());
 	}
 	
 	private AuthenticationManager createAuthenticationManager(UserDetailsService userDetailsService) {

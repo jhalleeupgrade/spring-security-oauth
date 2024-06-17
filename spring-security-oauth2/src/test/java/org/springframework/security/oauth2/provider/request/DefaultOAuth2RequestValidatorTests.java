@@ -13,12 +13,15 @@
 
 package org.springframework.security.oauth2.provider.request;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.springframework.security.oauth2.common.exceptions.InvalidScopeException;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.security.oauth2.provider.AuthorizationRequest;
@@ -45,7 +48,7 @@ public class DefaultOAuth2RequestValidatorTests {
 
 	private Map<String, String> params;
 
-	@Before
+	@BeforeEach
 	public void start() {
 		client.setClientId("foo");
 		client.setScope(Collections.singleton("bar"));
@@ -54,26 +57,34 @@ public class DefaultOAuth2RequestValidatorTests {
 		params.put("scope", "foo");
 	}
 
-	@Test(expected=InvalidScopeException.class)
+	@Test
 	public void testNotPermittedForEmpty() {
-		AuthorizationRequest request = factory.createAuthorizationRequest(params);
-		request.setScope(Collections.<String>emptySet());
-		validator.validateScope(request, client);;
+		assertThrows(InvalidScopeException.class, () -> {
+			AuthorizationRequest request = factory.createAuthorizationRequest(params);
+			request.setScope(Collections.<String>emptySet());
+			validator.validateScope(request, client);
+			;
+		});
 	}
 
-	@Test(expected=InvalidScopeException.class)
+	@Test
 	public void testNotPermittedForAuthorization() {
-		AuthorizationRequest request = factory.createAuthorizationRequest(params );
-		request.setScope(Collections.singleton("foo"));
-		validator.validateScope(request, client);
+		assertThrows(InvalidScopeException.class, () -> {
+			AuthorizationRequest request = factory.createAuthorizationRequest(params);
+			request.setScope(Collections.singleton("foo"));
+			validator.validateScope(request, client);
+		});
 	}
 
-	@Test(expected=InvalidScopeException.class)
+	@Test
 	public void testNotPermittedForScope() {
-		AuthorizationRequest request = factory.createAuthorizationRequest(params );
-		TokenRequest tokenRequest = factory.createTokenRequest(request, "authorization_code");
-		tokenRequest.setScope(Collections.singleton("foo"));
-		validator.validateScope(tokenRequest, client);;
+		assertThrows(InvalidScopeException.class, () -> {
+			AuthorizationRequest request = factory.createAuthorizationRequest(params);
+			TokenRequest tokenRequest = factory.createTokenRequest(request, "authorization_code");
+			tokenRequest.setScope(Collections.singleton("foo"));
+			validator.validateScope(tokenRequest, client);
+			;
+		});
 	}
 
 }

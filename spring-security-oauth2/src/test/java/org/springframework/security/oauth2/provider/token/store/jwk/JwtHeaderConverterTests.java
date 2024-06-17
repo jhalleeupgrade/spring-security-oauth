@@ -15,14 +15,14 @@
  */
 package org.springframework.security.oauth2.provider.token.store.jwk;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+
+import org.junit.jupiter.api.Test;
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
 
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.oauth2.provider.token.store.jwk.JwtTestUtil.createDefaultJwtPayload;
 import static org.springframework.security.oauth2.provider.token.store.jwk.JwtTestUtil.createJwt;
 
@@ -33,37 +33,33 @@ import static org.springframework.security.oauth2.provider.token.store.jwk.JwtTe
  * @author Vedran Pavic
  */
 public class JwtHeaderConverterTests {
-	private final JwtHeaderConverter converter = new JwtHeaderConverter();
+    private final JwtHeaderConverter converter = new JwtHeaderConverter();
 
-	@Rule
-	public ExpectedException thrown = ExpectedException.none();
+    @Test
+    public void convertWhenJwtTokenIsNullThenThrowNullPointerException() throws Exception {
+        assertThatThrownBy(() -> this.converter.convert(null))
+                .isInstanceOf(NullPointerException.class);
+    }
 
+    @Test
+    public void convertWhenJwtTokenInvalidThenThrowJwkException() throws Exception {
+        assertThatThrownBy(() -> this.converter.convert(""))
+                .isInstanceOf(InvalidTokenException.class)
+                .withFailMessage("Invalid JWT. Missing JOSE Header.");
+    }
 
-	@Test
-	public void convertWhenJwtTokenIsNullThenThrowNullPointerException() throws Exception {
-		this.thrown.expect(NullPointerException.class);
-		this.converter.convert(null);
-	}
+    @Test
+    public void convertWhenJwtTokenValidThenReturnJwtHeaders() throws Exception {
+        Map<String, String> jwtHeaders = this.converter.convert(createJwt());
+        assertEquals("key-id-1", jwtHeaders.get(JwkAttributes.KEY_ID));
+        assertEquals(JwkDefinition.CryptoAlgorithm.RS256.headerParamValue(), jwtHeaders.get(JwkAttributes.ALGORITHM));
+    }
 
-	@Test
-	public void convertWhenJwtTokenInvalidThenThrowJwkException() throws Exception {
-		this.thrown.expect(InvalidTokenException.class);
-		this.thrown.expectMessage("Invalid JWT. Missing JOSE Header.");
-		this.converter.convert("");
-	}
-
-	@Test
-	public void convertWhenJwtTokenValidThenReturnJwtHeaders() throws Exception {
-		Map<String, String> jwtHeaders = this.converter.convert(createJwt());
-		assertEquals("key-id-1", jwtHeaders.get(JwkAttributes.KEY_ID));
-		assertEquals(JwkDefinition.CryptoAlgorithm.RS256.headerParamValue(), jwtHeaders.get(JwkAttributes.ALGORITHM));
-	}
-
-	@Test
-	public void convertWhenJwtTokenWithMalformedHeaderThenThrowJwkException() throws Exception {
-		this.thrown.expect(InvalidTokenException.class);
-		this.thrown.expectMessage("Invalid JWT. Malformed JOSE Header.");
-		this.converter.convert("f." + new String(createDefaultJwtPayload()));
-	}
+    @Test
+    public void convertWhenJwtTokenWithMalformedHeaderThenThrowJwkException() throws Exception {
+        assertThatThrownBy(() -> this.converter.convert("f." + new String(createDefaultJwtPayload())))
+                .isInstanceOf(InvalidTokenException.class)
+                .withFailMessage("Invalid JWT. Missing JOSE Header.");
+    }
 
 }

@@ -1,12 +1,14 @@
 package org.springframework.security.oauth2.provider.vote;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.ConfigAttribute;
@@ -30,7 +32,7 @@ public class ClientScopeVoterTests {
 
 	private BaseClientDetails client;
 
-	@Before
+	@BeforeEach
 	public void init() {
 		AuthorizationRequest authorizationRequest = new AuthorizationRequest();
 		authorizationRequest.setClientId("client");
@@ -51,13 +53,15 @@ public class ClientScopeVoterTests {
 						Arrays.<ConfigAttribute> asList(new SecurityConfig("CLIENT_HAS_SCOPE"))));
 	}
 
-	@Test(expected=AccessDeniedException.class)
+	@Test
 	public void testAccessDenied() {
-		client.setScope(Arrays.asList("none"));
-		assertEquals(
-				AccessDecisionVoter.ACCESS_DENIED,
-				voter.vote(authentication, null,
-						Arrays.<ConfigAttribute> asList(new SecurityConfig("CLIENT_HAS_SCOPE"))));
+		assertThrows(AccessDeniedException.class, () -> {
+			client.setScope(Arrays.asList("none"));
+			assertEquals(
+					AccessDecisionVoter.ACCESS_DENIED,
+					voter.vote(authentication, null,
+							Arrays.<ConfigAttribute>asList(new SecurityConfig("CLIENT_HAS_SCOPE"))));
+		});
 	}
 
 	@Test

@@ -15,10 +15,11 @@
  */
 package org.springframework.security.jwt.crypto.sign;
 
-import org.junit.Test;
 import org.springframework.security.jwt.codec.Codecs;
 
 import java.math.BigInteger;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.Security;
@@ -26,6 +27,8 @@ import java.security.Signature;
 import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.ECPublicKey;
 import java.security.spec.ECGenParameterSpec;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link EllipticCurveVerifier}.
@@ -44,9 +47,11 @@ public class EllipticCurveVerifierTests {
 		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void constructorWhenUnsupportedCurveThenThrowIllegalArgumentException() {
-		new EllipticCurveVerifier(BigInteger.ONE, BigInteger.ONE, "unsupported-curve", SHA256_ECDSA_ALG);
+		assertThrows(IllegalArgumentException.class, () -> {
+			new EllipticCurveVerifier(BigInteger.ONE, BigInteger.ONE, "unsupported-curve", SHA256_ECDSA_ALG);
+		});
 	}
 
 	@Test
@@ -54,9 +59,11 @@ public class EllipticCurveVerifierTests {
 		this.verifyWhenSignatureMatchesThenVerificationPasses(P256_CURVE, SHA256_ECDSA_ALG);
 	}
 
-	@Test(expected = InvalidSignatureException.class)
+	@Test
 	public void verifyWhenP256CurveAndSignatureDoesNotMatchThenThrowInvalidSignatureException() throws Exception {
-		this.verifyWhenSignatureDoesNotMatchThenThrowInvalidSignatureException(P256_CURVE, SHA256_ECDSA_ALG);
+		assertThrows(InvalidSignatureException.class, () -> {
+			this.verifyWhenSignatureDoesNotMatchThenThrowInvalidSignatureException(P256_CURVE, SHA256_ECDSA_ALG);
+		});
 	}
 
 	@Test
@@ -64,9 +71,11 @@ public class EllipticCurveVerifierTests {
 		this.verifyWhenSignatureMatchesThenVerificationPasses(P384_CURVE, SHA384_ECDSA_ALG);
 	}
 
-	@Test(expected = InvalidSignatureException.class)
+	@Test
 	public void verifyWhenP384CurveAndSignatureDoesNotMatchThenThrowInvalidSignatureException() throws Exception {
-		this.verifyWhenSignatureDoesNotMatchThenThrowInvalidSignatureException(P384_CURVE, SHA384_ECDSA_ALG);
+		assertThrows(InvalidSignatureException.class, () -> {
+			this.verifyWhenSignatureDoesNotMatchThenThrowInvalidSignatureException(P384_CURVE, SHA384_ECDSA_ALG);
+		});
 	}
 
 	@Test
@@ -74,27 +83,31 @@ public class EllipticCurveVerifierTests {
 		this.verifyWhenSignatureMatchesThenVerificationPasses(P521_CURVE, SHA512_ECDSA_ALG);
 	}
 
-	@Test(expected = InvalidSignatureException.class)
+	@Test
 	public void verifyWhenP521CurveAndSignatureDoesNotMatchThenThrowInvalidSignatureException() throws Exception {
-		this.verifyWhenSignatureDoesNotMatchThenThrowInvalidSignatureException(P521_CURVE, SHA512_ECDSA_ALG);
+		assertThrows(InvalidSignatureException.class, () -> {
+			this.verifyWhenSignatureDoesNotMatchThenThrowInvalidSignatureException(P521_CURVE, SHA512_ECDSA_ALG);
+		});
 	}
 
-	@Test(expected = InvalidSignatureException.class)
+	@Test
 	public void verifyWhenSignatureAlgorithmNotSameAsVerificationAlgorithmThenThrowInvalidSignatureException() throws Exception {
-		KeyPair keyPair = this.generateKeyPair(P256_CURVE);
-		ECPublicKey publicKey = (ECPublicKey) keyPair.getPublic();
-		ECPrivateKey privateKey = (ECPrivateKey) keyPair.getPrivate();
+		assertThrows(InvalidSignatureException.class, () -> {
+			KeyPair keyPair = this.generateKeyPair(P256_CURVE);
+			ECPublicKey publicKey = (ECPublicKey)keyPair.getPublic();
+			ECPrivateKey privateKey = (ECPrivateKey)keyPair.getPrivate();
 
-		byte[] data = "Some data".getBytes();
+			byte[] data = "Some data".getBytes();
 
-		byte[] jwsSignature = Codecs.b64UrlEncode(this.generateJwsSignature(data, SHA256_ECDSA_ALG, privateKey));
+			byte[] jwsSignature = Codecs.b64UrlEncode(this.generateJwsSignature(data, SHA256_ECDSA_ALG, privateKey));
 
-		EllipticCurveVerifier verifier = new EllipticCurveVerifier(
-				publicKey.getW().getAffineX(),
-				publicKey.getW().getAffineY(),
-				P256_CURVE,
-				SHA512_ECDSA_ALG);
-		verifier.verify(data, Codecs.b64UrlDecode(jwsSignature));
+			EllipticCurveVerifier verifier = new EllipticCurveVerifier(
+					publicKey.getW().getAffineX(),
+					publicKey.getW().getAffineY(),
+					P256_CURVE,
+					SHA512_ECDSA_ALG);
+			verifier.verify(data, Codecs.b64UrlDecode(jwsSignature));
+		});
 	}
 
 	private void verifyWhenSignatureMatchesThenVerificationPasses(String curve, String algorithm) throws Exception {
