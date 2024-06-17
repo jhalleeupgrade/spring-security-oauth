@@ -35,65 +35,64 @@ import java.util.List;
 
 /**
  * <p>
- * @deprecated See the <a href="https://github.com/spring-projects/spring-security/wiki/OAuth-2.0-Migration-Guide">OAuth 2.0 Migration Guide</a> for Spring Security 5.
  *
  * @author Rob Winch
  * @author Dave Syer
- * 
+ * @deprecated See the <a href="https://github.com/spring-projects/spring-security/wiki/OAuth-2.0-Migration-Guide">OAuth 2.0 Migration Guide</a> for Spring Security 5.
  */
 @Configuration
 @Order(0)
-@Import({ ClientDetailsServiceConfiguration.class, AuthorizationServerEndpointsConfiguration.class })
+@Import({ClientDetailsServiceConfiguration.class, AuthorizationServerEndpointsConfiguration.class})
 @Deprecated
 public class AuthorizationServerSecurityConfiguration {
-	@Autowired
-	private List<AuthorizationServerConfigurer> configurers = Collections.emptyList();
+    @Autowired
+    private List<AuthorizationServerConfigurer> configurers = Collections.emptyList();
 
-	@Autowired
-	private ClientDetailsService clientDetailsService;
+    @Autowired
+    private ClientDetailsService clientDetailsService;
 
-	@Autowired
-	private AuthorizationServerEndpointsConfiguration endpoints;
+    @Autowired
+    private AuthorizationServerEndpointsConfiguration endpoints;
 
-	@Autowired
-	public void configure(ClientDetailsServiceConfigurer clientDetails) throws Exception {
-		for (AuthorizationServerConfigurer configurer : configurers) {
-			configurer.configure(clientDetails);
-		}
-	}
+    @Autowired
+    public void configure(ClientDetailsServiceConfigurer clientDetails) throws Exception {
+        for (AuthorizationServerConfigurer configurer : configurers) {
+            configurer.configure(clientDetails);
+        }
+    }
 
-	@Bean
-	protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
-		AuthorizationServerSecurityConfigurer configurer = new AuthorizationServerSecurityConfigurer();
-		FrameworkEndpointHandlerMapping handlerMapping = endpoints.oauth2EndpointHandlerMapping();
-		http.setSharedObject(FrameworkEndpointHandlerMapping.class, handlerMapping);
-		configure(configurer);
-		http.apply(configurer);
-		String tokenEndpointPath = handlerMapping.getServletPath("/oauth/token");
-		String tokenKeyPath = handlerMapping.getServletPath("/oauth/token_key");
-		String checkTokenPath = handlerMapping.getServletPath("/oauth/check_token");
-		if (!endpoints.getEndpointsConfigurer().isUserDetailsServiceOverride()) {
-			UserDetailsService userDetailsService = http.getSharedObject(UserDetailsService.class);
-			endpoints.getEndpointsConfigurer().userDetailsService(userDetailsService);
-		}
-		// @formatter:off
-		http
-				.authorizeRequests()
-//				.requestMatchers(tokenEndpointPath).fullyAuthenticated()
-				.requestMatchers(tokenKeyPath).access(configurer.getTokenKeyAccess())
-				.requestMatchers(checkTokenPath).access(configurer.getCheckTokenAccess())
-				.requestMatchers(tokenEndpointPath, tokenKeyPath, checkTokenPath)
-				.fullyAuthenticated();
-		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.NEVER);
-		// @formatter:on
-		http.setSharedObject(ClientDetailsService.class, clientDetailsService);
+    @Bean
+    protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
+        AuthorizationServerSecurityConfigurer configurer = new AuthorizationServerSecurityConfigurer();
+        FrameworkEndpointHandlerMapping handlerMapping = endpoints.oauth2EndpointHandlerMapping();
+        http.setSharedObject(FrameworkEndpointHandlerMapping.class, handlerMapping);
+        configure(configurer);
+        http.apply(configurer);
+        String tokenEndpointPath = handlerMapping.getServletPath("/oauth/token");
+        String tokenKeyPath = handlerMapping.getServletPath("/oauth/token_key");
+        String checkTokenPath = handlerMapping.getServletPath("/oauth/check_token");
+        if (!endpoints.getEndpointsConfigurer().isUserDetailsServiceOverride()) {
+            UserDetailsService userDetailsService = http.getSharedObject(UserDetailsService.class);
+            endpoints.getEndpointsConfigurer().userDetailsService(userDetailsService);
+        }
+        // @formatter:off
+        http
+                .authorizeHttpRequests(authorizeRequest ->
+                        authorizeRequest
+                                .requestMatchers(tokenEndpointPath, tokenKeyPath, checkTokenPath)
+                                .fullyAuthenticated()
+                );
 
-		return http.build();
-	}
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.NEVER);
+        // @formatter:on
+        http.setSharedObject(ClientDetailsService.class, clientDetailsService);
 
-	protected void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
-		for (AuthorizationServerConfigurer configurer : configurers) {
-			configurer.configure(oauthServer);
-		}
-	}
+        return http.build();
+    }
+
+    protected void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
+        for (AuthorizationServerConfigurer configurer : configurers) {
+            configurer.configure(oauthServer);
+        }
+    }
 }
